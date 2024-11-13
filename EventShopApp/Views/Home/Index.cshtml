@@ -1,8 +1,90 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model EventShopApp.ViewModels.HomeViewModel
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .home-page {
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+    }
+
+    .catalog-container {
+        background-color: #e0e0e0; /* Light gray background for rows */
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .catalog {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px;
+        justify-content: center;
+    }
+
+    .catalog-item {
+        display: inline-block;
+        margin: 0 15px;
+        text-align: center;
+    }
+
+    .catalog img {
+        max-width: 150px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="home-page">
+    <!-- Shop Name -->
+    <h1>Spring</h1>
+
+    <!-- Flowers Catalog -->
+    <div class="catalog-container">
+        <div class="catalog flowers-catalog">
+            @foreach (var flower in Model.Flowers)
+            {
+                    <div class="catalog-item">
+                        <img src="@flower.FlowerImageUrl" alt="@flower.FlowerType" />
+                    </div>
+            }
+        </div>
+    </div>
+
+    <!-- Arrangements Catalog -->
+    <div class="catalog-container">
+        <div class="catalog arrangements-catalog">
+            @foreach (var arrangement in Model.Arrangements)
+            {
+                    <div class="catalog-item">
+                        <img src="@arrangement.ArrangementItemImageUrl" alt="@arrangement.ArrangementItemType" />
+                    </div>
+            }
+        </div>
+    </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const scrollCatalog = (catalog, speed) => {
+            let scrollAmount = 0;
+            const interval = setInterval(() => {
+                catalog.scrollLeft += speed;
+                scrollAmount += Math.abs(speed);
+                if (scrollAmount >= catalog.scrollWidth) scrollAmount = 0;
+            }, 30);
+        };
+
+        // Auto-scroll left for flowers and right for arrangements
+        const flowersCatalog = document.querySelector('.flowers-catalog');
+        const arrangementsCatalog = document.querySelector('.arrangements-catalog');
+
+        scrollCatalog(flowersCatalog, -1); // Move left
+        scrollCatalog(arrangementsCatalog, 1); // Move right
+    });
+</script>
+

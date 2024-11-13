@@ -1,0 +1,42 @@
+﻿@model IEnumerable<EventShopApp.ViewModels.CartItemViewModel>
+
+<h2>Order Confirmation</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name (@item.ItemType)</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>@item.Quantity</td>
+                <td>@item.TotalPrice.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Customer Information</h3>
+<form method="post" asp-action="SubmitOrder">
+    <div class="form-group">
+        <label>Name:</label>
+        <input type="text" name="Name" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Email:</label>
+        <input type="email" name="Email" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Phone Number:</label>
+        <input type="tel" name="PhoneNumber" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-success">Confirm Order</button>
+</form>

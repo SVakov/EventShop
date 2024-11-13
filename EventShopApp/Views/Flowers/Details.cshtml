@@ -1,0 +1,22 @@
+﻿@model EventShopApp.ViewModels.FlowerViewModel
+
+<h2>@Model.FlowerType</h2>
+
+<div class="flower-details">
+    <img src="@Model.FlowerImageUrl" alt="@Model.FlowerType" />
+    <p>@Model.Description</p>
+    <p>Price: @Model.Price.ToString("C")</p>
+    <p>Quantity in stock: @Model.FlowerQuantity</p>
+</div>
+
+<style>
+    .flower-details {
+        text-align: center;
+    }
+
+        .flower-details img {
+            max-width: 300px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+</style>

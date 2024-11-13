@@ -1,0 +1,81 @@
+﻿@model IEnumerable<EventShopApp.ViewModels.FlowerViewModel>
+
+<h2>Our Flowers</h2>
+
+<div class="flower-list">
+    @foreach (var flower in Model)
+    {
+        <div class="flower-item">
+            <a asp-action="Details" asp-route-id="@flower.Id">
+                <img src="@flower.FlowerImageUrl" alt="@flower.FlowerType" />
+            </a>
+            <a asp-action="Details" asp-route-id="@flower.Id">
+                <h3>@flower.FlowerType</h3>
+            </a>
+            <p>@flower.Description</p>
+            <p>Price: @flower.Price.ToString("C")</p>
+
+            <!-- Quantity adjustment and action buttons -->
+            <div class="quantity-controls">
+                <button onclick="adjustQuantity(-1, @flower.Id)">-</button>
+                <input type="number" id="quantity-@flower.Id" value="0" min="0" />
+                <button onclick="adjustQuantity(1, @flower.Id)">+</button>
+            </div>
+
+            <!-- Add to Cart and Order buttons, hidden initially -->
+            <div id="actions-@flower.Id" style="display: none;">
+                <button class="btn btn-success">Add to Cart</button>
+                <button class="btn btn-primary">Order</button>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    function adjustQuantity(change, flowerId) {
+        var quantityInput = document.getElementById("quantity-" + flowerId);
+        var actionsDiv = document.getElementById("actions-" + flowerId);
+        var currentQuantity = parseInt(quantityInput.value);
+
+        var newQuantity = currentQuantity + change;
+        if (newQuantity >= 0) {
+            quantityInput.value = newQuantity;
+            actionsDiv.style.display = newQuantity > 0 ? "block" : "none"; // Show actions if quantity > 0
+        }
+    }
+</script>
+
+<style>
+    .flower-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .flower-item {
+        width: 200px;
+        text-align: center;
+    }
+
+    .flower-item img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .quantity-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .quantity-controls button {
+        width: 30px;
+        height: 30px;
+    }
+
+    .flower-item input[type="number"] {
+        width: 60px;
+        text-align: center;
+    }
+</style>
