@@ -24,6 +24,9 @@ namespace EventShopApp.Models
         [Range(0, ValidationConstants.MaxFlowerQuantity, ErrorMessage = "Quantity must be between 0 and 1000.")]
         public int FlowerQuantity { get; set; }
 
+        [Url]
+        public string? FlowerImageUrl { get; set; }
+
         public bool IsAvailable => FlowerQuantity > 0;
     }
 }
