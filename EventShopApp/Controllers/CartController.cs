@@ -79,6 +79,19 @@ namespace EventShopApp.Controllers
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
 
+                foreach (var cartItem in CartItems)
+                {
+                    var flower = _context.Flowers.FirstOrDefault(f => f.Id == cartItem.Id);
+                    if (flower != null && flower.FlowerQuantity >= cartItem.Quantity)
+                    {
+                        flower.FlowerQuantity -= cartItem.Quantity;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+               
+
                 // Clear cart after order is placed
                 CartItems.Clear();
 
@@ -88,6 +101,18 @@ namespace EventShopApp.Controllers
                 return RedirectToAction("OrderConfirmation");
             }
             return View("Order", model);
+        }
+
+        [HttpPost]
+        public IActionResult RemoveFromCart(int id)
+        {
+            var item = CartItems.FirstOrDefault(i => i.Id == id);
+            if (item != null)
+            {
+                CartItems.Remove(item);
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
         }
 
         public IActionResult OrderConfirmation()

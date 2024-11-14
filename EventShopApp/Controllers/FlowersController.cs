@@ -26,7 +26,8 @@ namespace EventShopApp.Controllers
                     FlowerType = f.FlowerType,
                     Price = f.Price,
                     Description = f.Description.Length > 20 ? f.Description.Substring(0, 20) + "..." : f.Description,
-                    FlowerImageUrl = f.FlowerImageUrl
+                    FlowerImageUrl = f.FlowerImageUrl,
+                    FlowerQuantity = f.FlowerQuantity
                 })
         .ToListAsync();
 

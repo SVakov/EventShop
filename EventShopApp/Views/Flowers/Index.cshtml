@@ -14,12 +14,18 @@
             </a>
             <p>@flower.Description</p>
             <p>Price: @flower.Price.ToString("C")</p>
+            <p>In Stock: @flower.FlowerQuantity</p>
 
             <!-- Quantity adjustment and action buttons -->
             <div class="quantity-controls">
-                <button onclick="adjustQuantity(-1, @flower.Id)">-</button>
-                <input type="number" id="quantity-@flower.Id" value="0" min="0" />
-                <button onclick="adjustQuantity(1, @flower.Id)">+</button>
+                <button onclick="adjustQuantity(-1, @flower.Id, @flower.FlowerQuantity)">-</button>
+                <input type="number" id="quantity-@flower.Id" value="0" min="0" oninput="validateQuantity(@flower.Id, @flower.FlowerQuantity)" />
+                <button onclick="adjustQuantity(1, @flower.Id, @flower.FlowerQuantity)">+</button>
+            </div>
+
+            <!-- Stock warning message -->
+            <div id="stock-warning-@flower.Id" style="display: none; color: red;">
+                Not enough stock available.
             </div>
 
             <!-- Add to Cart form -->
@@ -29,30 +35,43 @@
                 <input type="hidden" name="ImageUrl" value="@flower.FlowerImageUrl" />
                 <input type="hidden" name="Price" value="@flower.Price" />
                 <input type="hidden" name="Quantity" id="cart-quantity-@flower.Id" value="0" />
-                <button type="button" onclick="addToCart(@flower.Id)" class="btn btn-success">Add to Cart</button>
+                <button type="button" onclick="addToCart(@flower.Id)" id="add-to-cart-button-@flower.Id" class="btn btn-success">Add to Cart</button>
             </form>
         </div>
     }
 </div>
 
 <script>
-    function adjustQuantity(change, flowerId) {
-        // Get quantity input and form elements
+    function adjustQuantity(change, flowerId, maxQuantity) {
         const quantityInput = document.getElementById("quantity-" + flowerId);
         const cartQuantityInput = document.getElementById("cart-quantity-" + flowerId);
+
+        // Adjust quantity
+        let newQuantity = parseInt(quantityInput.value) + change;
+        if (newQuantity < 0) newQuantity = 0;
+
+        quantityInput.value = newQuantity;
+        cartQuantityInput.value = newQuantity;
+
+        validateQuantity(flowerId, maxQuantity);
+    }
+
+    function validateQuantity(flowerId, maxQuantity) {
+        const quantityInput = document.getElementById("quantity-" + flowerId);
         const form = document.getElementById("cart-form-" + flowerId);
+        const addToCartButton = document.getElementById("add-to-cart-button-" + flowerId);
+        const warning = document.getElementById("stock-warning-" + flowerId);
 
-        // Adjust quantity value
-        let currentQuantity = parseInt(quantityInput.value);
-        let newQuantity = currentQuantity + change;
+        const quantity = parseInt(quantityInput.value);
 
-        // Ensure quantity is not negative
-        if (newQuantity >= 0) {
-            quantityInput.value = newQuantity;
-            cartQuantityInput.value = newQuantity;
-
-            // Show or hide form based on quantity
-            form.style.display = newQuantity > 0 ? "block" : "none";
+        // Show form if quantity > 0, but check stock availability
+        form.style.display = quantity > 0 ? "block" : "none";
+        if (quantity > maxQuantity) {
+            addToCartButton.disabled = true;
+            warning.style.display = "block";
+        } else {
+            addToCartButton.disabled = false;
+            warning.style.display = "none";
         }
     }
 

@@ -15,6 +15,7 @@ else
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
+                <th>Action</th> <!-- New column for Remove button -->
             </tr>
         </thead>
         <tbody>
@@ -28,6 +29,9 @@ else
                     <td>@item.Price.ToString("C")</td>
                     <td>@item.Quantity</td>
                     <td>@item.TotalPrice.ToString("C")</td>
+                    <td>
+                        <button onclick="removeFromCart(@item.Id)" class="btn btn-danger btn-sm">Remove</button> <!-- Remove button -->
+                    </td>
                 </tr>
             }
         </tbody>
@@ -37,6 +41,23 @@ else
         <a asp-action="ClearCart" class="btn btn-danger">Empty Cart</a>
         <a asp-action="Order" class="btn btn-primary">Order</a> <!-- Order Button -->
     </div>
-
- 
 }
+
+<script>
+    function removeFromCart(itemId) {
+        fetch(`/Cart/RemoveFromCart/${itemId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+               
+                location.reload(); // Reload page to update cart view
+            } else {
+                alert("Failed to remove item from cart.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
