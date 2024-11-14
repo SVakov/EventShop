@@ -4,7 +4,7 @@
 
 @if (!Model.Any())
 {
-    <p>@ViewData["Message"]</p>
+    <p>Your cart is empty.</p>
 }
 else
 {
@@ -23,7 +23,7 @@ else
                 <tr>
                     <td>
                         <img src="@item.ImageUrl" alt="@item.Name" width="50" />
-                        <span>@item.Name (@item.ItemType)</span>
+                        <span>@item.Name</span>
                     </td>
                     <td>@item.Price.ToString("C")</td>
                     <td>@item.Quantity</td>
@@ -35,6 +35,8 @@ else
 
     <div class="cart-actions">
         <a asp-action="ClearCart" class="btn btn-danger">Empty Cart</a>
-        <a asp-action="Order" class="btn btn-primary">Order</a>
+        <a asp-action="Order" class="btn btn-primary">Order</a> <!-- Order Button -->
     </div>
+
+ 
 }

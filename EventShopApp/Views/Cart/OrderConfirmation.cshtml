@@ -1,0 +1,12 @@
+﻿@if (TempData["OrderConfirmation"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["OrderConfirmation"]
+    </div>
+}
+
+<script>
+    setTimeout(function () {
+        window.location.href = '@Url.Action("Index", "Cart")';
+    }, 3000); // Redirect after 3 seconds
+</script>
