@@ -1,0 +1,22 @@
+﻿@model EventShopApp.ViewModels.ArrangementViewModel
+
+<h2>@Model.ArrangementItemType</h2>
+
+<div class="arrangement-details">
+    <img src="@Model.ArrangementItemImageUrl" alt="@Model.ArrangementItemType" />
+    <p>@Model.Description</p>
+    <p>Price: @Model.Price.ToString("C")</p>
+    <p>Quantity in stock: @Model.ArrangementItemsQuantity</p>
+</div>
+
+<style>
+    .arrangement-details {
+        text-align: center;
+    }
+
+        .arrangement-details img {
+            max-width: 300px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+</style>

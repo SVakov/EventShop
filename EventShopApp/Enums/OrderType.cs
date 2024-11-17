@@ -2,7 +2,7 @@
 {
     public enum OrderType
     {
-        Bouquet,
+        Flower,
         Arrangement
     }
 }

@@ -26,7 +26,9 @@ namespace EventShopApp.Controllers
         [HttpPost]
         public IActionResult AddToCart(CartItemViewModel item)
         {
-            var existingItem = CartItems.Find(i => i.Id == item.Id);
+            // Find existing item based on Id and ItemType
+            var existingItem = CartItems.FirstOrDefault(i => i.Id == item.Id && i.ItemType == item.ItemType);
+
             if (existingItem != null)
             {
                 existingItem.Quantity += item.Quantity;
@@ -35,6 +37,7 @@ namespace EventShopApp.Controllers
             {
                 CartItems.Add(item);
             }
+
             return Json(new { success = true });
         }
 
@@ -79,18 +82,54 @@ namespace EventShopApp.Controllers
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
 
+                // Iterate over cart items
                 foreach (var cartItem in CartItems)
                 {
-                    var flower = _context.Flowers.FirstOrDefault(f => f.Id == cartItem.Id);
-                    if (flower != null && flower.FlowerQuantity >= cartItem.Quantity)
+                    if (cartItem.ItemType == OrderType.Flower)
                     {
-                        flower.FlowerQuantity -= cartItem.Quantity;
+                        // Decrease stock for flowers
+                        var flower = _context.Flowers.FirstOrDefault(f => f.Id == cartItem.Id);
+                        if (flower != null && flower.FlowerQuantity >= cartItem.Quantity)
+                        {
+                            flower.FlowerQuantity -= cartItem.Quantity;
+                        }
+
+                        // Add to OrderDetails for flowers
+                        //var orderDetail = new OrderDetail
+                       // {
+                        //    OrderId = order.Id,
+                        //    FlowerId = flower?.Id ?? 0, // Flower is mandatory
+                        //    OrderedFlowerQuantity = cartItem.Quantity,
+                        //    Type = OrderType.Flower,
+                        //    ArrangementItemsId = null, // Not applicable for flowers
+                        //    IsPrepayed = false
+                        //};
+                        //_context.OrderDetails.Add(orderDetail);
+                    }
+                    else if (cartItem.ItemType == OrderType.Arrangement)
+                    {
+                        // Decrease stock for arrangements
+                        var arrangement = _context.ArrangementItems.FirstOrDefault(a => a.Id == cartItem.Id);
+                        if (arrangement != null && arrangement.ArrangementItemsQuantity >= cartItem.Quantity)
+                        {
+                            arrangement.ArrangementItemsQuantity -= cartItem.Quantity;
+                        }
+
+                        // Add to OrderDetails for arrangements
+                        //var orderDetail = new OrderDetail
+                       // {
+                       //     OrderId = order.Id,
+                       //     FlowerId = 0, // Not applicable for arrangements
+                       //     OrderedFlowerQuantity = 0, // Not applicable for arrangements
+                       //     Type = OrderType.Arrangement,
+                       //     ArrangementItemsId = arrangement?.Id,
+                       //     IsPrepayed = false
+                       // };
+                       // _context.OrderDetails.Add(orderDetail);
                     }
                 }
 
                 await _context.SaveChangesAsync();
-
-               
 
                 // Clear cart after order is placed
                 CartItems.Clear();
@@ -100,6 +139,7 @@ namespace EventShopApp.Controllers
 
                 return RedirectToAction("OrderConfirmation");
             }
+
             return View("Order", model);
         }
 

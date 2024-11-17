@@ -1,0 +1,132 @@
+﻿@model IEnumerable<EventShopApp.ViewModels.ArrangementViewModel>
+
+<h2>Our Arrangements</h2>
+
+<div class="arrangement-list">
+    @foreach (var arrangement in Model)
+    {
+        <div class="arrangement-item">
+            <a asp-action="Details" asp-route-id="@arrangement.Id">
+                <img src="@arrangement.ArrangementItemImageUrl" alt="@arrangement.ArrangementItemType" />
+            </a>
+            <a asp-action="Details" asp-route-id="@arrangement.Id">
+                <h3>@arrangement.ArrangementItemType</h3>
+            </a>
+            <p>@arrangement.Description</p>
+            <p>Price: @arrangement.Price.ToString("C")</p>
+            <p>In Stock: @arrangement.ArrangementItemsQuantity</p>
+
+            <!-- Quantity adjustment and action buttons -->
+            <div class="quantity-controls">
+                <button onclick="adjustQuantity(-1, @arrangement.Id, @arrangement.ArrangementItemsQuantity)">-</button>
+                <input type="number" id="quantity-@arrangement.Id" value="0" min="0" oninput="validateQuantity(@arrangement.Id, @arrangement.ArrangementItemsQuantity)" />
+                <button onclick="adjustQuantity(1, @arrangement.Id, @arrangement.ArrangementItemsQuantity)">+</button>
+            </div>
+
+            <!-- Stock warning message -->
+            <div id="stock-warning-@arrangement.Id" style="display: none; color: red;">
+                Not enough stock available.
+            </div>
+
+            <!-- Add to Cart form -->
+            <form id="cart-form-@arrangement.Id" asp-controller="Cart" asp-action="AddToCart" method="post" style="display: none;">
+                <input type="hidden" name="Id" value="@arrangement.Id" />
+                <input type="hidden" name="Name" value="@arrangement.ArrangementItemType" />
+                <input type="hidden" name="ImageUrl" value="@arrangement.ArrangementItemImageUrl" />
+                <input type="hidden" name="Price" value="@arrangement.Price" />
+                <input type="hidden" name="Quantity" id="cart-quantity-@arrangement.Id" value="0" />
+                <input type="hidden" name="ItemType" value="Arrangement" />
+                <button type="button" onclick="addToCart(@arrangement.Id)" id="add-to-cart-button-@arrangement.Id" class="btn btn-success">Add to Cart</button>
+            </form>
+        </div>
+    }
+</div>
+
+<script>
+    function adjustQuantity(change, arrangementId, maxQuantity) {
+        const quantityInput = document.getElementById("quantity-" + arrangementId);
+        const cartQuantityInput = document.getElementById("cart-quantity-" + arrangementId);
+
+        // Adjust quantity
+        let newQuantity = parseInt(quantityInput.value) + change;
+        if (newQuantity < 0) newQuantity = 0;
+
+        quantityInput.value = newQuantity;
+        cartQuantityInput.value = newQuantity;
+
+        validateQuantity(arrangementId, maxQuantity);
+    }
+
+    function validateQuantity(arrangementId, maxQuantity) {
+        const quantityInput = document.getElementById("quantity-" + arrangementId);
+        const form = document.getElementById("cart-form-" + arrangementId);
+        const addToCartButton = document.getElementById("add-to-cart-button-" + arrangementId);
+        const warning = document.getElementById("stock-warning-" + arrangementId);
+
+        const quantity = parseInt(quantityInput.value);
+
+        // Show form if quantity > 0, but check stock availability
+        form.style.display = quantity > 0 ? "block" : "none";
+        if (quantity > maxQuantity) {
+            addToCartButton.disabled = true;
+            warning.style.display = "block";
+        } else {
+            addToCartButton.disabled = false;
+            warning.style.display = "none";
+        }
+    }
+
+    function addToCart(arrangementId) {
+        const form = document.getElementById("cart-form-" + arrangementId);
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Item added to cart successfully!");
+                } else {
+                    alert("Failed to add item to cart.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+
+<style>
+    .arrangement-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .arrangement-item {
+        width: 200px;
+        text-align: center;
+    }
+
+        .arrangement-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+    .quantity-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .quantity-controls button {
+            width: 30px;
+            height: 30px;
+        }
+
+    .arrangement-item input[type="number"] {
+        width: 60px;
+        text-align: center;
+    }
+</style>

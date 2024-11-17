@@ -12,6 +12,7 @@ else
         <thead>
             <tr>
                 <th>Item</th>
+                <th>Type</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
@@ -26,6 +27,7 @@ else
                         <img src="@item.ImageUrl" alt="@item.Name" width="50" />
                         <span>@item.Name</span>
                     </td>
+                    <td>@item.ItemType</td>
                     <td>@item.Price.ToString("C")</td>
                     <td>@item.Quantity</td>
                     <td>@item.TotalPrice.ToString("C")</td>
