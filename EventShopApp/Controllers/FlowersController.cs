@@ -1,61 +1,36 @@
-﻿using EventShopApp.Data;
-using EventShopApp.Models;
+﻿using EventShopApp.Services;
 using EventShopApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EventShopApp.Controllers
 {
     public class FlowersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IFlowerService _flowerService;
 
-        public FlowersController(ApplicationDbContext context)
+        public FlowersController(IFlowerService flowerService)
         {
-            _context = context;
+            _flowerService = flowerService;
         }
 
-        // Action to display the list of flowers
+        // Fetch the list of flowers for the Index page
         public async Task<IActionResult> Index()
         {
-            var flowers = await _context.Flowers
-                .Where(f => f.FlowerQuantity > 0)
-                .Select(f => new FlowerViewModel
-                {
-                     Id = f.Id,
-                    FlowerType = f.FlowerType,
-                    Price = f.Price,
-                    Description = f.Description.Length > 20 ? f.Description.Substring(0, 20) + "..." : f.Description,
-                    FlowerImageUrl = f.FlowerImageUrl,
-                    FlowerQuantity = f.FlowerQuantity
-                })
-        .ToListAsync();
-
-            return View(flowers);
+            var flowers = await _flowerService.GetAllAvailableFlowersAsync(); // Use ViewModel-compatible service
+            return View(flowers); // Index.cshtml expects IEnumerable<FlowerViewModel>
         }
 
-        // Action to display detailed view of a specific flower
+        // Fetch details for a specific flower
         public async Task<IActionResult> Details(int id)
         {
-            var flower = await _context.Flowers
-        .Where(f => f.Id == id)
-        .Select(f => new FlowerViewModel
-        {
-            Id = f.Id,
-            FlowerType = f.FlowerType,
-            Price = f.Price,
-            Description = f.Description,
-            FlowerImageUrl = f.FlowerImageUrl,
-            FlowerQuantity = f.FlowerQuantity
-        })
-        .FirstOrDefaultAsync();
+            var flower = await _flowerService.GetFlowerDetailsByIdAsync(id);
 
             if (flower == null)
             {
                 return NotFound();
             }
 
-            return View(flower);
+            return View(flower); // Details.cshtml expects FlowerViewModel
         }
     }
 }

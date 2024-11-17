@@ -1,12 +1,12 @@
-﻿using EventShopApp.Models;
+﻿using EventShopApp.ViewModels;
 
 namespace EventShopApp.ViewModels
 {
     public class HomeViewModel
     {
-        public IEnumerable<Flower> Flowers { get; set; } = new List<Flower>();
+        public IEnumerable<FlowerViewModel> Flowers { get; set; } = new List<FlowerViewModel>();
 
-        public IEnumerable<ArrangementItem> Arrangements { get; set; } = new List<ArrangementItem>();
+        public IEnumerable<ArrangementViewModel> Arrangements { get; set; } = new List<ArrangementViewModel>();
 
         // Indicates whether the user has the option to register or log in
         public bool ShowRegisterOrLogin { get; set; } = true;

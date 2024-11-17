@@ -11,29 +11,29 @@ namespace EventShopApp.Models
         public int Id { get; set; }
 
         [Required]
-        public int OrderId { get; set; } 
+        public int OrderId { get; set; }
 
         [ForeignKey("OrderId")]
-        public Order Order { get; set; } 
+        public Order? Order { get; set; }
 
-        [Required]
-        public int FlowerId { get; set; } 
+        public int? FlowerId { get; set; }
 
         [ForeignKey("FlowerId")]
-        public Flower Flower { get; set; } 
+        public Flower? Flower { get; set; }
+
+        public int? OrderedFlowerQuantity { get; set; }
 
         [Required]
-        public int OrderedFlowerQuantity { get; set; } 
+        public OrderType Type { get; set; }
 
-        [Required]
-        public OrderType Type { get; set; } 
-
-        public int? ArrangementItemsId { get; set; } 
+        public int? ArrangementItemsId { get; set; }
 
         [ForeignKey("ArrangementItemsId")]
-        public ArrangementItem? ArrangementItem { get; set; } 
+        public ArrangementItem? ArrangementItem { get; set; }
+
+        public int? OrderedArrangementQuantity { get; set; } // New field for arrangements
 
         [Required]
-        public bool IsPrepayed { get; set; } 
+        public bool IsPrepayed { get; set; }
     }
 }

@@ -1,55 +1,36 @@
-﻿using EventShopApp.Data;
+﻿using EventShopApp.Services;
 using EventShopApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-public class ArrangementsController : Controller
+namespace EventShopApp.Controllers
 {
-    private readonly ApplicationDbContext _context;
-
-    public ArrangementsController(ApplicationDbContext context)
+    public class ArrangementsController : Controller
     {
-        _context = context;
-    }
+        private readonly IArrangementService _arrangementService;
 
-    public async Task<IActionResult> Index()
-    {
-        var arrangements = await _context.ArrangementItems
-            .Where(a => a.ArrangementItemsQuantity > 0)
-            .Select(a => new ArrangementViewModel
-            {
-                Id = a.Id,
-                ArrangementItemType = a.ArrangementItemType,
-                Price = a.Price,
-                Description = a.Description.Length > 20 ? a.Description.Substring(0, 20) + "..." : a.Description,
-                ArrangementItemImageUrl = a.ArrangementItemImageUrl,
-                ArrangementItemsQuantity = a.ArrangementItemsQuantity
-            })
-            .ToListAsync();
-
-        return View(arrangements);
-    }
-
-    public async Task<IActionResult> Details(int id)
-    {
-        var arrangement = await _context.ArrangementItems
-            .Where(a => a.Id == id)
-            .Select(a => new ArrangementViewModel
-            {
-                Id = a.Id,
-                ArrangementItemType = a.ArrangementItemType,
-                Price = a.Price,
-                Description = a.Description,
-                ArrangementItemImageUrl = a.ArrangementItemImageUrl,
-                ArrangementItemsQuantity = a.ArrangementItemsQuantity
-            })
-            .FirstOrDefaultAsync();
-
-        if (arrangement == null)
+        public ArrangementsController(IArrangementService arrangementService)
         {
-            return NotFound();
+            _arrangementService = arrangementService;
         }
 
-        return View(arrangement);
+        // Use the service to fetch all available arrangements
+        public async Task<IActionResult> Index()
+        {
+            var arrangements = await _arrangementService.GetAllAvailableArrangementsAsync();
+            return View(arrangements);
+        }
+
+        // Use the service to fetch arrangement details
+        public async Task<IActionResult> Details(int id)
+        {
+            var arrangement = await _arrangementService.GetArrangementDetailsByIdAsync(id);
+
+            if (arrangement == null)
+            {
+                return NotFound();
+            }
+
+            return View(arrangement);
+        }
     }
 }
