@@ -1,5 +1,7 @@
 using EventShopApp.Data;
 using EventShopApp.Services;
+using EventShopApp.Services.Implementation;
+using EventShopApp.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +20,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IFlowerService, FlowerService>();
 builder.Services.AddScoped<IArrangementService, ArrangementService>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 
 var app = builder.Build();
