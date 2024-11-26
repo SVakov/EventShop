@@ -1,0 +1,95 @@
+﻿@model IEnumerable<EventShopApp.ViewModels.CartItemViewModel>
+
+<h2>Your Cart</h2>
+
+@if (!Model.Any())
+{
+    <p>Your cart is empty.</p>
+}
+else
+{
+    <form id="cart-form" method="post">
+        @Html.AntiForgeryToken() <!-- Anti-forgery token added here -->
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Action</th> <!-- New column for Remove button -->
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="@item.ImageUrl" alt="@item.Name" width="50" />
+                            <span>@item.Name</span>
+                        </td>
+                        <td>@item.ItemType</td>
+                        <td>@item.Price.ToString("C")</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.TotalPrice.ToString("C")</td>
+                        <td>
+                            <button onclick="removeFromCart(@item.Id)" class="btn btn-danger btn-sm">Remove</button> <!-- Remove button -->
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="cart-actions">
+            <button id="clear-cart-button" class="btn btn-danger">Empty Cart</button>
+            <a asp-area="RegisteredUser" asp-controller="RegisteredUsersCart" asp-action="Order" class="btn btn-primary" id="order-button">Order</a>
+        </div>
+    </form>
+}
+
+<script>
+    function removeFromCart(itemId) {
+        fetch(`/Cart/RemoveFromCart/${itemId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload page to update cart view
+                } else {
+                    alert("Failed to remove item from cart.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Handle Clear Cart
+    document.getElementById("clear-cart-button").addEventListener("click", function () {
+        fetch('/RegisteredUser/RegisteredUsersCart/ClearCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload(); // Reload the page to update the cart
+                } else {
+                    alert("Failed to clear the cart.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    // Handle Order
+    document.getElementById("order-button").addEventListener("click", function () {
+        window.location.href = '/RegisteredUser/RegisteredUsersCart/Order'; // Redirect to the order page
+    });
+</script>

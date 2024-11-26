@@ -3,6 +3,7 @@ using EventShopApp.Enums;
 using EventShopApp.Models;
 using EventShopApp.Services.Interfaces;
 using EventShopApp.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventShopApp.Controllers
@@ -10,14 +11,22 @@ namespace EventShopApp.Controllers
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public CartController(ICartService cartService)
+        public CartController(ICartService cartService, SignInManager<IdentityUser> signInManager)
         {
             _cartService = cartService;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
+            if (_signInManager.IsSignedIn(User))
+            {
+                // Redirect to the registered user's cart logic
+                return RedirectToAction("Index", "RegisteredUsersCart", new { area = "RegisteredUser" });
+            }
+
             var cartItems = _cartService.GetCartItems();
             return View(cartItems);
         }
@@ -44,6 +53,12 @@ namespace EventShopApp.Controllers
 
         public IActionResult Order()
         {
+            if (_signInManager.IsSignedIn(User))
+            {
+                // Redirect to the registered user's order logic
+                return RedirectToAction("Order", "RegisteredUsersCart", new { area = "RegisteredUser" });
+            }
+
             return View(new OrderViewModel());
         }
 

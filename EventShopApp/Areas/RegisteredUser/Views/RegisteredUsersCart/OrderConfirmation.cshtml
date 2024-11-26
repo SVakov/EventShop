@@ -1,0 +1,14 @@
+﻿@model string
+
+@if (TempData["OrderConfirmation"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["OrderConfirmation"]
+    </div>
+}
+
+<script>
+    setTimeout(function () {
+        window.location.href = '@Url.Action("Index", "RegisteredUsersCart", new { area = "RegisteredUser" })';
+    }, 3000); // Redirect to the cart after 3 seconds
+</script>

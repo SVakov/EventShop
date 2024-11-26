@@ -51,6 +51,10 @@ namespace EventShopApp.Services.Implementation
 
         public async Task<bool> SubmitOrder(OrderViewModel model)
         {
+            Console.WriteLine("SubmitOrder in CartService triggered.");
+            Console.WriteLine($"CartItems Count: {CartItems.Count}");
+            Console.WriteLine($"Order Details - Email: {model.Email}, Name: {model.Name}");
+
             if (!CartItems.Any()) return false;
 
             var client = _context.Clients.FirstOrDefault(c => c.Email == model.Email);

@@ -1,4 +1,5 @@
 ﻿using EventShopApp.Constants;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
 
@@ -27,5 +28,6 @@ namespace EventShopApp.Models
 
         [StringLength(ValidationConstants.MaxAddressLength, ErrorMessage = "Address cannot be longer than 50 characters.")]
         public string? Address { get; set; }
+
     }
 }
