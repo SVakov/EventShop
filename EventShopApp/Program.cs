@@ -15,7 +15,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+    options.Password.RequireDigit = true; // Require at least one digit (e.g., "0-9")
+    options.Password.RequireLowercase = true; // Require at least one lowercase letter (e.g., "a-z")
+    options.Password.RequireUppercase = true; // Require at least one uppercase letter (e.g., "A-Z")
+    options.Password.RequireNonAlphanumeric = true; // Require at least one special character (e.g., "@", "#", "!")
+    options.Password.RequiredLength = 8; // Set the minimum length for passwords
+    options.Password.RequiredUniqueChars = 1;
+})
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IFlowerService, FlowerService>();
