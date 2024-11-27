@@ -1,0 +1,91 @@
+﻿@model EventShopApp.Areas.RegisteredUser.ViewModels.ProfileViewModel
+
+<h2>My Profile</h2>
+
+<div class="profile-section">
+    <h3>Personal Details</h3>
+    <div>
+        <label><strong>Email:</strong></label>
+        <span>@Model.Email</span>
+    </div>
+    <div>
+        <label><strong>Name:</strong></label>
+        <span>@Model.Name</span>
+    </div>
+    <div>
+        <label><strong>Surname:</strong></label>
+        <span>@Model.Surname</span>
+        <a href="#" class="btn btn-sm btn-primary" onclick="editField('surname')">Edit</a>
+    </div>
+    <div>
+        <label><strong>Phone Number:</strong></label>
+        <span>@Model.PhoneNumber</span>
+        <a href="#" class="btn btn-sm btn-primary" onclick="editField('phoneNumber')">Edit</a>
+    </div>
+    <div>
+        <label><strong>Address:</strong></label>
+        <span>@Model.Address</span>
+        <a href="#" class="btn btn-sm btn-primary" onclick="editField('address')">Edit</a>
+    </div>
+</div>
+
+<div class="order-history-section">
+    <h3>Order History</h3>
+    <div>
+        <label>Sort By:</label>
+        <a href="@Url.Action("Index", new { sortOrder = "asc" })" class="btn btn-link">Oldest First</a>
+        <a href="@Url.Action("Index", new { sortOrder = "desc" })" class="btn btn-link">Latest First</a>
+    </div>
+
+    @if (Model.Orders.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order Date</th>
+                    <th>Deadline Date</th>
+                    <th>Status</th>
+                    <th>Item Type</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <tr>
+                        <td>@order.DateOfOrder.ToShortDateString()</td>
+                        <td>@order.DeadLineDate.ToShortDateString()</td>
+                        <td>@order.Status</td>
+                        <td>@order.ItemType</td>
+                        <td>@order.ItemName</td>
+                        <td>@order.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>You have not placed any orders yet.</p>
+    }
+</div>
+
+<script>
+    function editField(field) {
+        const newValue = prompt(`Enter new value for ${field}:`);
+        if (newValue) {
+            fetch(`/RegisteredUser/Profile/Update${field}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ value: newValue })
+            }).then(response => {
+                if (response.ok) {
+                    location.reload(); // Reload to reflect changes
+                } else {
+                    alert("Failed to update field.");
+                }
+            }).catch(error => console.error("Error:", error));
+        }
+    }
+</script>
