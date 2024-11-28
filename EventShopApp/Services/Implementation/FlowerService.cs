@@ -1,4 +1,6 @@
 ﻿using EventShopApp.Data;
+using EventShopApp.Enums;
+using EventShopApp.Models;
 using EventShopApp.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +26,11 @@ namespace EventShopApp.Services
                     FlowerImageUrl = f.FlowerImageUrl
                 })
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Flower>> GetAllFlowers()
+        {
+            return await _context.Flowers.ToListAsync();
         }
 
         public async Task<IEnumerable<FlowerViewModel>> GetAllAvailableFlowersAsync()
@@ -57,5 +64,51 @@ namespace EventShopApp.Services
                 })
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<Flower?> GetFlowerById(int id)
+        {
+            return await _context.Flowers.FindAsync(id);
+        }
+
+        public async Task UpdateFlower(Flower flower)
+        {
+            _context.Flowers.Update(flower);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SoftDeleteFlower(int id)
+        {
+            var flower = await _context.Flowers.FindAsync(id);
+            if (flower != null)
+            {
+                flower.IsAvailable = false;
+                _context.Flowers.Update(flower);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task BringBackFlower(int id)
+        {
+            var flower = await _context.Flowers.FindAsync(id);
+            if (flower != null)
+            {
+                flower.IsAvailable = true;
+                _context.Flowers.Update(flower);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task AddFlower(Flower flower)
+        {
+            await _context.Flowers.AddAsync(flower);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<EmployeeRole?> GetEmployeeRoleByEmail(string email)
+        {
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Email == email);
+            return employee?.Role;
+        }
+
     }
 }

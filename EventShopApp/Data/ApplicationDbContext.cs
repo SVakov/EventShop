@@ -1,4 +1,6 @@
-﻿using EventShopApp.Models;
+﻿using EventShopApp.Enums;
+using EventShopApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +22,8 @@ namespace EventShopApp.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+
 
             // Seed Flowers
             modelBuilder.Entity<Flower>().HasData(
@@ -64,7 +68,39 @@ namespace EventShopApp.Data
                     ArrangementItemImageUrl = "https://example.com/images/wedding_arrangement.jpg"
                 }
             );
+
+            // Add the first employee record
+            modelBuilder.Entity<Employee>().HasData(
+                new Employee
+                {
+                    Id = 1,
+                    Name = "Slavcho",
+                    Surname = "Vakov",
+                    PhoneNumber = "+359893540139",
+                    Email = "vakovslavcho@gmail.com",
+                    Role = EmployeeRole.Owner,
+                    HireDate = DateTime.UtcNow,
+                    IsFired = false
+                }
+            );
+
+            // Seed the AspNetUsers table
+            var hasher = new PasswordHasher<IdentityUser>();
+            var ownerUser = new IdentityUser
+            {
+                Id = Guid.NewGuid().ToString(), // Unique ID for the user
+                UserName = "vakovslavcho@gmail.com",
+                NormalizedUserName = "VAKOVSLAVCHO@GMAIL.COM",
+                Email = "vakovslavcho@gmail.com",
+                NormalizedEmail = "VAKOVSLAVCHO@GMAIL.COM",
+                EmailConfirmed = true
+            };
+            ownerUser.PasswordHash = hasher.HashPassword(ownerUser, "Owner@123");
+
+            modelBuilder.Entity<IdentityUser>().HasData(ownerUser);
         }
     }
-    
 }
+
+    
+

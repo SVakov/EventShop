@@ -1,4 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using EventShopApp.Data
+@using EventShopApp.Enums
+@inject IServiceProvider ServiceProvider
+
+@{
+    var dbContext = ServiceProvider.GetService<ApplicationDbContext>();
+    var userEmail = User.Identity?.Name;
+    var employee = dbContext?.Employees.FirstOrDefault(e => e.Email == userEmail);
+    var isOwnerOrManager = employee?.Role == EmployeeRole.Owner || employee?.Role == EmployeeRole.Manager;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +35,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Flowers" asp-action="Index">Flowers</a>
+                            @if (isOwnerOrManager == true)
+                            {
+                                <a class="nav-link text-dark" asp-area="Management" asp-controller="Flowers" asp-action="Index">Flowers</a>
+                            }
+                            else
+                            {
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Flowers" asp-action="Index">Flowers</a>
+                            }
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Arrangements" asp-action="Index">Arrangements</a>

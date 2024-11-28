@@ -4,6 +4,7 @@ using EventShopApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventShopApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241128115527_AddBackingFieldToIsAvailable")]
+    partial class AddBackingFieldToIsAvailable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +157,7 @@ namespace EventShopApp.Data.Migrations
                         {
                             Id = 1,
                             Email = "vakovslavcho@gmail.com",
-                            HireDate = new DateTime(2024, 11, 28, 15, 3, 22, 870, DateTimeKind.Utc).AddTicks(929),
+                            HireDate = new DateTime(2024, 11, 28, 11, 55, 25, 10, DateTimeKind.Utc).AddTicks(8837),
                             IsFired = false,
                             Name = "Slavcho",
                             PhoneNumber = "+359893540139",
@@ -405,17 +408,17 @@ namespace EventShopApp.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7d3458fc-b810-42ac-921d-7a40a78db9c9",
+                            Id = "543e18ad-f9e2-42a3-8e2c-eca35c20908e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "41bfee9f-8767-4001-8160-0bd2a2dc11e1",
+                            ConcurrencyStamp = "940be83f-41e2-4b76-ab46-8e15b456c684",
                             Email = "vakovslavcho@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VAKOVSLAVCHO@GMAIL.COM",
                             NormalizedUserName = "VAKOVSLAVCHO@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMQjPj6KRKwE7HljyFtoKTMv/coXd1KUOt14wrQfs3GCNAS2vV+ID0oi6zH65u7kAA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELywt8IQqOTm5W7aNTkyOlB/cQqwNsLrWLa572dOkgQEv4Ocmk2K3+xGMILaU0ffMw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1e1c0b81-5fa2-48f4-965e-cbfbae4f6c3d",
+                            SecurityStamp = "82ca6678-64de-4a39-ab94-0bf1512e626d",
                             TwoFactorEnabled = false,
                             UserName = "vakovslavcho@gmail.com"
                         });

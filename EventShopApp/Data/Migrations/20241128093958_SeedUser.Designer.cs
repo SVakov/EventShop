@@ -4,6 +4,7 @@ using EventShopApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventShopApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241128093958_SeedUser")]
+    partial class SeedUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,7 +157,7 @@ namespace EventShopApp.Data.Migrations
                         {
                             Id = 1,
                             Email = "vakovslavcho@gmail.com",
-                            HireDate = new DateTime(2024, 11, 28, 15, 3, 22, 870, DateTimeKind.Utc).AddTicks(929),
+                            HireDate = new DateTime(2024, 11, 28, 9, 39, 53, 566, DateTimeKind.Utc).AddTicks(7407),
                             IsFired = false,
                             Name = "Slavcho",
                             PhoneNumber = "+359893540139",
@@ -186,9 +189,6 @@ namespace EventShopApp.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -204,7 +204,6 @@ namespace EventShopApp.Data.Migrations
                             FlowerImageUrl = "https://www.google.com/search?sca_esv=4804c780a61df574&rlz=1C1CSMH_deBG1019BG1019&sxsrf=ADLYWILL-fEBWMKJ8DEd93sgIi-ZMaaubw:1731505504049&q=rose&udm=2&fbs=AEQNm0D0mdjV9iZmrIToWZfLy6hjiHLZlz0gO0cW40eqjD3LgTC_9I288s3dQhxfUDXs5Fh64FGxavo5glsqTygQ17zo5u5z-gmkJwHk96CuJucXHmdluPwYGcIpyynasv9IftnWJq-CfxpS_cad0RJd64zY0_BoK5ArRwSPBg01jRrMOCRHwSALX6-XKMwhPRWNubgHCdfCPqfrmwSM-EXYGxVfKhnPsPbd-f0c-EuCDsO_bpwPW8w&sa=X&ved=2ahUKEwiB9PrTuNmJAxVLS_EDHeVdDX0QtKgLegQIERAB&biw=1920&bih=911&dpr=1#vhid=7P8wcguiNtDg_M&vssid=mosaic",
                             FlowerQuantity = 100,
                             FlowerType = "Rose",
-                            IsAvailable = false,
                             Price = 2.99m
                         },
                         new
@@ -214,7 +213,6 @@ namespace EventShopApp.Data.Migrations
                             FlowerImageUrl = "https://s3.amazonaws.com/cdn.tulips.com/images/large/Timeless-Tulip.jpg",
                             FlowerQuantity = 50,
                             FlowerType = "Tulip",
-                            IsAvailable = false,
                             Price = 1.99m
                         });
                 });
@@ -405,17 +403,17 @@ namespace EventShopApp.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7d3458fc-b810-42ac-921d-7a40a78db9c9",
+                            Id = "a1df175b-7510-4197-9334-08a434c5bd4f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "41bfee9f-8767-4001-8160-0bd2a2dc11e1",
+                            ConcurrencyStamp = "28b4fac8-89dd-4abd-a8da-0b3d96f839ea",
                             Email = "vakovslavcho@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VAKOVSLAVCHO@GMAIL.COM",
                             NormalizedUserName = "VAKOVSLAVCHO@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMQjPj6KRKwE7HljyFtoKTMv/coXd1KUOt14wrQfs3GCNAS2vV+ID0oi6zH65u7kAA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEfP1uRCs2wFSUm1jAjApW4Nr8GPgDFrKWd+kHuEcbxyZvVvm+k58qsu4vZ3SvpQzA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1e1c0b81-5fa2-48f4-965e-cbfbae4f6c3d",
+                            SecurityStamp = "411a7afe-831f-4818-90ee-ecca67f7e89a",
                             TwoFactorEnabled = false,
                             UserName = "vakovslavcho@gmail.com"
                         });

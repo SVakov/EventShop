@@ -1,7 +1,10 @@
 using EventShopApp.Data;
+using EventShopApp.Enums;
 using EventShopApp.Services;
+using EventShopApp.Services.Authorization;
 using EventShopApp.Services.Implementation;
 using EventShopApp.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +33,22 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IFlowerService, FlowerService>();
 builder.Services.AddScoped<IArrangementService, ArrangementService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ManagementAccess", policy =>
+        policy.RequireAssertion(context =>
+        {
+            var userEmail = context.User.Identity?.Name;
+            using var scope = builder.Services.BuildServiceProvider().CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var employee = dbContext.Employees.FirstOrDefault(e => e.Email == userEmail);
+            return employee != null &&
+                   (employee.Role == EmployeeRole.Owner || employee.Role == EmployeeRole.Manager);
+        }));
+});
+
+builder.Services.AddScoped<IAuthorizationHandler, ManagementAccessHandler>();
 
 
 var app = builder.Build();
