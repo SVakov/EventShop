@@ -27,6 +27,12 @@ namespace EventShopApp.Models
         [Url]
         public string? ArrangementItemImageUrl { get; set; }
 
-        public bool IsAvailable => ArrangementItemsQuantity > 0;
+        private bool _isAvailable;
+
+        public bool IsAvailable
+        {
+            get => ArrangementItemsQuantity > 0 && _isAvailable; 
+            set => _isAvailable = value;
+        }
     }
 }

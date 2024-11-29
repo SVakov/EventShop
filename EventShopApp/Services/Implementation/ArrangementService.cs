@@ -1,4 +1,5 @@
 ﻿using EventShopApp.Data;
+using EventShopApp.Models;
 using EventShopApp.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,6 +57,50 @@ namespace EventShopApp.Services
                     ArrangementItemsQuantity = a.ArrangementItemsQuantity
                 })
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<ArrangementItem>> GetAllArrangements()
+        {
+            return await _context.ArrangementItems.ToListAsync();
+        }
+
+        public async Task<ArrangementItem?> GetArrangementById(int id)
+        {
+            return await _context.ArrangementItems.FindAsync(id);
+        }
+
+        public async Task AddArrangement(ArrangementItem arrangement)
+        {
+            await _context.ArrangementItems.AddAsync(arrangement);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateArrangement(ArrangementItem arrangement)
+        {
+            _context.ArrangementItems.Update(arrangement);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SoftDeleteArrangement(int id)
+        {
+            var arrangement = await _context.ArrangementItems.FindAsync(id);
+            if (arrangement != null)
+            {
+                arrangement.IsAvailable = false;
+                _context.ArrangementItems.Update(arrangement);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task BringBackArrangement(int id)
+        {
+            var arrangement = await _context.ArrangementItems.FindAsync(id);
+            if (arrangement != null)
+            {
+                arrangement.IsAvailable = true;
+                _context.ArrangementItems.Update(arrangement);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

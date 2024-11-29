@@ -21,10 +21,9 @@
         <option value="quantity-desc" @(ViewBag.SortOrder == "quantity-desc" ? "selected" : "")>Quantity (High to Low)</option>
     </select>
 
-    @if (ViewBag.UserRole == EmployeeRole.Owner || ViewBag.UserRole == EmployeeRole.Manager)
-    {
+    
         <a asp-action="Add" class="btn btn-primary" id="addFlowerButton">+ Add Flower</a>
-    }
+    
 </div>
 
 
@@ -32,19 +31,14 @@
     <thead>
         <tr>
           
-            @if (ViewBag.UserRole == EmployeeRole.Owner || ViewBag.UserRole == EmployeeRole.Manager)
-            {
+            
                 <th>Name</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Actions</th>
-            }
-            else
-            {
-                <th>Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-            }
+            
+        
+           
         </tr>
     </thead>
     <tbody>
