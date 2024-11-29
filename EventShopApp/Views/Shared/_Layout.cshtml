@@ -4,10 +4,19 @@
 @inject IServiceProvider ServiceProvider
 
 @{
-    var dbContext = ServiceProvider.GetService<ApplicationDbContext>();
-    var userEmail = User.Identity?.Name;
-    var employee = dbContext?.Employees.FirstOrDefault(e => e.Email == userEmail);
-    var isOwnerOrManager = employee?.Role == EmployeeRole.Owner || employee?.Role == EmployeeRole.Manager;
+    string employeeRole = null;
+
+    if (User.Identity?.IsAuthenticated ?? false)
+    {
+        var userEmail = User.Identity?.Name;
+
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var employee = context.Employees.FirstOrDefault(e => e.Email == userEmail);
+            employeeRole = employee?.Role.ToString();
+        }
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +44,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            @if (isOwnerOrManager == true)
+                            @if (employeeRole == "Owner" || employeeRole == "Manager")
                             {
                                 <a class="nav-link text-dark" asp-area="Management" asp-controller="Flowers" asp-action="Index">Flowers</a>
                             }
@@ -45,7 +54,7 @@
                             }
                         </li>
                         <li class="nav-item">
-                            @if(isOwnerOrManager == true)
+                            @if (employeeRole == "Owner" || employeeRole == "Manager")
                             {
                                 <a class="nav-link text-dark" asp-area="Management" asp-controller="Arrangements" asp-action="Index">Arrangements</a>
                             }
@@ -55,6 +64,12 @@
                             }
                             
                         </li>
+                        @if (employeeRole == "Owner" || employeeRole == "Manager" || employeeRole == "Seller")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Management" asp-controller="Employees" asp-action="Index">Employees</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>                       

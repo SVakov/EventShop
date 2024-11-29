@@ -20,3 +20,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.text-muted {
+    color: #6c757d; 
+    opacity: 0.6; 
+}

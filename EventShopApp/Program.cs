@@ -27,8 +27,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.Password.RequireNonAlphanumeric = true; // Require at least one special character (e.g., "@", "#", "!")
     options.Password.RequiredLength = 8; // Set the minimum length for passwords
     options.Password.RequiredUniqueChars = 1;
-})
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+}).AddRoles<IdentityRole>()
+  .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IFlowerService, FlowerService>();
 builder.Services.AddScoped<IArrangementService, ArrangementService>();

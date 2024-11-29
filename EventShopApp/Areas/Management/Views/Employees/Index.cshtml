@@ -7,6 +7,7 @@
             <th>Name</th>
             <th>Surname</th>
             <th>Role</th>
+            <th>Hire date</th>
             <th>Email</th>
             <th>Actions</th>
         </tr>
@@ -14,17 +15,108 @@
     <tbody>
         @foreach (var employee in Model)
         {
-            <tr>
+            <tr class="@((employee.IsFired) ? "text-muted" : "")">
                 <td>@employee.Name</td>
                 <td>@employee.Surname</td>
                 <td>@employee.Role.ToString()</td>
+                <td>@employee.HireDate</td>
                 <td>@employee.Email</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@employee.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <button class="btn btn-sm btn-primary" onclick="openEditModal(@employee.Id)">Edit</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<a asp-action="Add" class="btn btn-primary">Add Reinforcement</a>
+<a id="addReinforcementLink" asp-area="Management" asp-controller="Employees" asp-action="Add" class="btn btn-primary">Add Reinforcement</a>
+
+<!-- Edit Employee Modal -->
+<div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editEmployeeModalLabel">Edit Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editEmployeeForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editEmployeeId" />
+                    <div class="mb-3">
+                        <label for="editRole" class="form-label">Role</label>
+                        <select id="editRole" class="form-select">
+                            @foreach (var role in Enum.GetValues(typeof(EventShopApp.Enums.EmployeeRole)))
+                            {
+                                <option value="@role">@role</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editIsFired" class="form-label">Is Fired</label>
+                        <input type="checkbox" id="editIsFired" class="form-check-input" />
+                    </div>
+                    <button type="button" class="btn btn-primary" id="saveEditEmployeeButton">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Open the Edit Modal
+    function openEditModal(employeeId) {
+        fetch(`/Management/Employees/Edit/${employeeId}`, { method: "GET" })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch employee data.");
+                }
+                return response.json();
+            })
+            .then(employee => {
+                document.getElementById("editEmployeeId").value = employee.id;
+                document.getElementById("editRole").value = employee.role;
+                document.getElementById("editIsFired").checked = employee.isFired;
+
+                const editModal = new bootstrap.Modal(document.getElementById("editEmployeeModal"));
+                editModal.show();
+            })
+            .catch(error => console.error("Error fetching employee data:", error));
+    }
+
+    // Save Changes
+    document.getElementById("saveEditEmployeeButton").addEventListener("click", function () {
+        const employeeId = document.getElementById("editEmployeeId").value;
+        const updatedEmployee = {
+            Id: employeeId,
+            Role: document.getElementById("editRole").value,
+            IsFired: document.getElementById("editIsFired").checked
+        };
+
+        fetch(`/Management/Employees/Edit`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: JSON.stringify(updatedEmployee)
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload(); // Refresh the page to show updated data
+                } else {
+                    return response.json().then(data => {
+                        alert("Error: " + (data.errors || "Failed to save changes"));
+                    });
+                }
+            })
+            .catch(error => console.error("Error saving employee changes:", error));
+    });
+
+    // Redirect for Add Reinforcement button
+    document.getElementById("addReinforcementLink").addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent the default link behavior
+        window.location.href = '/Management/Employees/Add'; // Use JS to redirect
+    });
+
+</script>
