@@ -70,6 +70,18 @@
                                 <a class="nav-link text-dark" asp-area="Management" asp-controller="Employees" asp-action="Index">Employees</a>
                             </li>
                         }
+                        @if (employeeRole == "Owner" || employeeRole == "Manager" || employeeRole == "Seller")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Management" asp-controller="Clients" asp-action="Index">Clients</a>
+                            </li>
+                        }
+                        @if (employeeRole == "Owner" || employeeRole == "Manager" || employeeRole == "Seller")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Management" asp-controller="Orders" asp-action="Index">Orders</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>                       

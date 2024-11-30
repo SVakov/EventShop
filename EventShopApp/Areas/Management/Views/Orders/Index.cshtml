@@ -1,0 +1,104 @@
+﻿@using EventShopApp.Enums
+@model IEnumerable<EventShopApp.Models.Order>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1>Orders</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Client</th>
+            <th>Flowers</th>
+            <th>Flower Quantity</th>
+            <th>Arrangements</th>
+            <th>Arrangement Quantity</th>
+            <th>Date of Order</th>
+            <th>Deadline Date</th>
+            <th>Prepayed?</th>
+            <th>Order Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Client.Name</td>
+                <td>
+                    @foreach (var detail in order.OrderDetails)
+                    {
+                        if (detail.FlowerId != null)
+                        {
+                            <div>@detail.Flower.FlowerType</div>
+                        }
+                    }
+                </td>
+                <td>
+                    @foreach (var detail in order.OrderDetails)
+                    {
+                        if (detail.OrderedFlowerQuantity != null)
+                        {
+                            <div>@detail.OrderedFlowerQuantity</div>
+                        }
+                    }
+                </td>
+                <td>
+                    @foreach (var detail in order.OrderDetails)
+                    {
+                        if (detail.ArrangementItemsId != null)
+                        {
+                            <div>@detail.ArrangementItem.ArrangementItemType</div>
+                        }
+                    }
+                </td>
+                <td>
+                    @foreach (var detail in order.OrderDetails)
+                    {
+                        if (detail.OrderedArrangementQuantity != null)
+                        {
+                            <div>@detail.OrderedArrangementQuantity</div>
+                        }
+                    }
+                </td>
+                <td>@order.DateOfOrder.ToShortDateString()</td>
+                <td>@order.DeadLineDate.ToShortDateString()</td>
+                <td>@(order.OrderDetails.First().IsPrepayed ? "Yes" : "No")</td>
+                <td>
+                    <select class="form-control status-dropdown" data-order-id="@order.Id">
+                        @foreach (var status in Enum.GetValues(typeof(OrderStatus)).Cast<OrderStatus>())
+                        {
+                            <option value="@status" @(order.Status == status ? "selected" : "")>@status</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = order.Id, area = "Management" })" class="btn btn-primary">Edit Status</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Add", "Orders", new { area = "Management" })" class="btn btn-primary mb-3">+ Add Order</a>
+
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.status-dropdown').forEach(function (dropdown) {
+            dropdown.addEventListener('change', function () {
+                const orderId = dropdown.dataset.orderId;
+                const status = dropdown.value;
+                fetch(`/Management/Orders/Edit/${orderId}`, {
+                    method: 'POST',
+                    body: JSON.stringify({ Status: status, OrderId: orderId }),
+                    headers: { 'Content-Type': 'application/json' }
+                }).then(response => response.json()).then(data => {
+                    location.reload(); // Reload to reflect the status change
+                });
+            });
+        });
+    </script>
+}

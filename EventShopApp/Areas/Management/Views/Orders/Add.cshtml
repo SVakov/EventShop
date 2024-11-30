@@ -1,0 +1,8 @@
+﻿@model EventShopApp.Areas.Management.ViewModels.OrderViewModel
+
+<h2>Add New Order</h2>
+<form asp-action="Add" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Client info -->
+    <div
