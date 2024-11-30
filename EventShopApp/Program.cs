@@ -21,11 +21,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
-    options.Password.RequireDigit = true; // Require at least one digit (e.g., "0-9")
-    options.Password.RequireLowercase = true; // Require at least one lowercase letter (e.g., "a-z")
-    options.Password.RequireUppercase = true; // Require at least one uppercase letter (e.g., "A-Z")
-    options.Password.RequireNonAlphanumeric = true; // Require at least one special character (e.g., "@", "#", "!")
-    options.Password.RequiredLength = 8; // Set the minimum length for passwords
+    options.Password.RequireDigit = true; 
+    options.Password.RequireLowercase = true; 
+    options.Password.RequireUppercase = true; 
+    options.Password.RequireNonAlphanumeric = true; 
+    options.Password.RequiredLength = 8; 
     options.Password.RequiredUniqueChars = 1;
 }).AddRoles<IdentityRole>()
   .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -62,7 +62,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    
     app.UseHsts();
 }
 

@@ -31,7 +31,7 @@ namespace EventShopApp.Models
         [ForeignKey("ArrangementItemsId")]
         public ArrangementItem? ArrangementItem { get; set; }
 
-        public int? OrderedArrangementQuantity { get; set; } // New field for arrangements
+        public int? OrderedArrangementQuantity { get; set; } 
 
         [Required]
         public bool IsPrepayed { get; set; }

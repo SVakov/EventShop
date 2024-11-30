@@ -52,18 +52,15 @@ namespace EventShopApp.Areas.Management.Controllers
                 return View(employee);
             }
 
-            // Check if email already exists
             if (_context.Employees.Any(e => e.Email == employee.Email))
             {
                 ModelState.AddModelError(string.Empty, "An employee with this email already exists.");
                 return View(employee);
             }
 
-            // Assign default values
             employee.HireDate = DateTime.UtcNow;
             employee.IsFired = false;
 
-            // Create Identity user
             var user = new IdentityUser { UserName = employee.Email, Email = employee.Email };
             var result = await _userManager.CreateAsync(user, TemporaryPassword);
 
@@ -76,7 +73,6 @@ namespace EventShopApp.Areas.Management.Controllers
                 return View(employee);
             }
 
-            // Verify Password
             var verifyPasswordResult = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, TemporaryPassword);
             if (verifyPasswordResult != PasswordVerificationResult.Success)
             {
@@ -87,7 +83,6 @@ namespace EventShopApp.Areas.Management.Controllers
                 Console.WriteLine("Password verification succeeded after user creation.");
             }
 
-            // Assign Role
             var roleName = employee.Role.ToString();
             if (!await _roleManager.RoleExistsAsync(roleName))
             {
@@ -95,15 +90,12 @@ namespace EventShopApp.Areas.Management.Controllers
             }
             await _userManager.AddToRoleAsync(user, roleName);
 
-            // Debug Role Assignment
             var roles = await _userManager.GetRolesAsync(user);
             Console.WriteLine($"Assigned roles: {string.Join(", ", roles)}");
 
-            // Ensure Email Confirmed
             user.EmailConfirmed = true;
             await _userManager.UpdateAsync(user);
 
-            // Add employee to database
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 
@@ -142,7 +134,6 @@ namespace EventShopApp.Areas.Management.Controllers
                 return NotFound();
             }
 
-            // Convert Role from string to EmployeeRole enum
             if (Enum.TryParse(updatedFields.Role, out EmployeeRole role))
             {
                 existingEmployee.Role = role;

@@ -8,7 +8,6 @@ namespace EventShopApp.ViewModels
 
         public IEnumerable<ArrangementViewModel> Arrangements { get; set; } = new List<ArrangementViewModel>();
 
-        // Indicates whether the user has the option to register or log in
         public bool ShowRegisterOrLogin { get; set; } = true;
     }
 }

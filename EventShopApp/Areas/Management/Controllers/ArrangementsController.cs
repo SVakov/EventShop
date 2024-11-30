@@ -24,13 +24,11 @@ namespace EventShopApp.Areas.Management.Controllers
         {
             var arrangements = await _arrangementService.GetAllArrangements();
 
-            // Apply filters
             if (filter == "available")
                 arrangements = arrangements.Where(a => a.IsAvailable).ToList();
             else if (filter == "unavailable")
                 arrangements = arrangements.Where(a => !a.IsAvailable).ToList();
 
-            // Apply sorting
             arrangements = sortOrder switch
             {
                 "price-asc" => arrangements.OrderBy(a => a.Price).ToList(),
@@ -87,7 +85,7 @@ namespace EventShopApp.Areas.Management.Controllers
                     return NotFound(new { success = false, message = "Arrangement not found." });
                 }
 
-                arrangement.Price = model.Price; // Ensure Price is updated
+                arrangement.Price = model.Price; 
                 arrangement.ArrangementItemsQuantity = model.ArrangementItemsQuantity;
                 arrangement.Description = model.Description;
                 arrangement.ArrangementItemImageUrl = model.ArrangementItemImageUrl;

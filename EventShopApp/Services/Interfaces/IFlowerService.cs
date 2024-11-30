@@ -12,10 +12,10 @@ namespace EventShopApp.Services
         Task<FlowerViewModel?> GetFlowerDetailsByIdAsync(int id);
 
         Task<Flower?> GetFlowerById(int id);
-        Task UpdateFlower(Flower flower); // Update a flower
-        Task SoftDeleteFlower(int id); // Soft-delete a flower
-        Task BringBackFlower(int id); // Bring back a soft-deleted flower
-        Task AddFlower(Flower flower); // Add a new flower
+        Task UpdateFlower(Flower flower); 
+        Task SoftDeleteFlower(int id); 
+        Task BringBackFlower(int id); 
+        Task AddFlower(Flower flower); 
         Task<EmployeeRole?> GetEmployeeRoleByEmail(string email);
     }
 }

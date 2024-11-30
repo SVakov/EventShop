@@ -7,10 +7,15 @@
 
 <h1>Orders</h1>
 
+
+<a href="@Url.Action("Add", "Orders", new { area = "Management" })" class="btn btn-primary mb-3">+ Add Order</a>
+
+
 <table class="table">
     <thead>
         <tr>
             <th>Client</th>
+            <th>Client Address</th> 
             <th>Flowers</th>
             <th>Flower Quantity</th>
             <th>Arrangements</th>
@@ -19,53 +24,72 @@
             <th>Deadline Date</th>
             <th>Prepayed?</th>
             <th>Order Status</th>
+            <th>Total Amount</th> 
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var order in Model)
         {
-            <tr>
+            <tr id="order-@order.Id">
                 <td>@order.Client.Name</td>
+
+                
+                <td>
+                    @if (!string.IsNullOrEmpty(order.Client.Address))
+                    {
+                        <div>@order.Client.Address</div>
+                    }
+                    else
+                    {
+                        <div>N/A</div>
+                    }
+                </td>
+
                 <td>
                     @foreach (var detail in order.OrderDetails)
                     {
-                        if (detail.FlowerId != null)
+                        @if (detail.Flower != null)
                         {
                             <div>@detail.Flower.FlowerType</div>
                         }
                     }
                 </td>
+
                 <td>
                     @foreach (var detail in order.OrderDetails)
                     {
-                        if (detail.OrderedFlowerQuantity != null)
+                        @if (detail.OrderedFlowerQuantity != null)
                         {
                             <div>@detail.OrderedFlowerQuantity</div>
                         }
                     }
                 </td>
+
                 <td>
                     @foreach (var detail in order.OrderDetails)
                     {
-                        if (detail.ArrangementItemsId != null)
+                        @if (detail.ArrangementItem != null)
                         {
                             <div>@detail.ArrangementItem.ArrangementItemType</div>
                         }
                     }
                 </td>
+
                 <td>
                     @foreach (var detail in order.OrderDetails)
                     {
-                        if (detail.OrderedArrangementQuantity != null)
+                        @if (detail.OrderedArrangementQuantity != null)
                         {
                             <div>@detail.OrderedArrangementQuantity</div>
                         }
                     }
                 </td>
+
                 <td>@order.DateOfOrder.ToShortDateString()</td>
                 <td>@order.DeadLineDate.ToShortDateString()</td>
-                <td>@(order.OrderDetails.First().IsPrepayed ? "Yes" : "No")</td>
+                <td>@(order.OrderDetails.FirstOrDefault()?.IsPrepayed == true ? "Yes" : "No")</td>
+
                 <td>
                     <select class="form-control status-dropdown" data-order-id="@order.Id">
                         @foreach (var status in Enum.GetValues(typeof(OrderStatus)).Cast<OrderStatus>())
@@ -74,30 +98,65 @@
                         }
                     </select>
                 </td>
+
+                
                 <td>
-                    <a href="@Url.Action("Edit", new { id = order.Id, area = "Management" })" class="btn btn-primary">Edit Status</a>
+                    @{
+                        decimal totalAmount = 0;
+                        foreach (var detail in order.OrderDetails)
+                        {
+                            
+                            if (detail.Flower != null && detail.OrderedFlowerQuantity.HasValue)
+                            {
+                                totalAmount += detail.Flower.Price * detail.OrderedFlowerQuantity.Value;
+                            }
+
+                            
+                            if (detail.ArrangementItem != null && detail.OrderedArrangementQuantity.HasValue)
+                            {
+                                totalAmount += detail.ArrangementItem.Price * detail.OrderedArrangementQuantity.Value;
+                            }
+                        }
+                    }
+                    <div>@totalAmount.ToString("C2")</div> 
+                </td>
+
+                <td>
+                    
+                    <button class="btn btn-success btn-sm save-btn" data-order-id="@order.Id" style="display:none;">Save</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<a href="@Url.Action("Add", "Orders", new { area = "Management" })" class="btn btn-primary mb-3">+ Add Order</a>
-
-
 @section Scripts {
     <script>
-        document.querySelectorAll('.status-dropdown').forEach(function (dropdown) {
-            dropdown.addEventListener('change', function () {
-                const orderId = dropdown.dataset.orderId;
-                const status = dropdown.value;
-                fetch(`/Management/Orders/Edit/${orderId}`, {
-                    method: 'POST',
-                    body: JSON.stringify({ Status: status, OrderId: orderId }),
-                    headers: { 'Content-Type': 'application/json' }
-                }).then(response => response.json()).then(data => {
-                    location.reload(); // Reload to reflect the status change
+        
+        $(document).on('change', '.status-dropdown', function () {
+            var orderId = $(this).data('order-id');
+            var newStatus = $(this).val();
+            
+            $('#order-' + orderId + ' .save-btn').show();
+           
+            $('#order-' + orderId + ' .save-btn').click(function () {
+                $.ajax({
+                    url: '@Url.Action("UpdateOrderStatus", "Orders", new { area = "Management" })',
+                    type: 'POST',
+                    data: {
+                        orderId: orderId,
+                        status: newStatus
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            alert('Order status updated successfully.');
+                            location.reload(); 
+                        } else {
+                            alert('Error updating order status.');
+                        }
+                    }
                 });
+                $(this).hide();
             });
         });
     </script>

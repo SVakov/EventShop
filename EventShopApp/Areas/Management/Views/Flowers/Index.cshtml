@@ -154,12 +154,10 @@
 </div>
 
 <script>
-    // Open Add Flower Modal
     document.getElementById("addFlowerButton").addEventListener("click", function () {
         openFlowerModal("Add Flower", {});
     });
 
-    // Open the Edit Modal and populate it with flower data
     function openEditModal(flowerId) {
         fetch(`/Management/Flowers/Edit/${flowerId}`, { method: "GET" })
             .then(response => {
@@ -169,13 +167,11 @@
                 return response.json();
             })
             .then(flower => {
-                // Populate modal fields with the flower data
                 document.getElementById("editFlowerId").value = flower.id;
                 document.getElementById("editFlowerQuantity").value = flower.flowerQuantity;
                 document.getElementById("editFlowerDescription").value = flower.description;
                 document.getElementById("editFlowerImageUrl").value = flower.flowerImageUrl;
 
-                // Open the modal
                 const editModal = new bootstrap.Modal(document.getElementById("editFlowerModal"));
                 editModal.show();
             })
@@ -186,12 +182,12 @@
         const flowerId = document.getElementById("editFlowerId").value;
         const updatedFlower = {
             Id: flowerId,
-            FlowerType: document.querySelector(`tr[data-flower-id="${flowerId}"] td:first-child`).innerText, // Fetch the existing FlowerType from the table
+            FlowerType: document.querySelector(`tr[data-flower-id="${flowerId}"] td:first-child`).innerText, 
             FlowerQuantity: parseInt(document.getElementById("editFlowerQuantity").value, 10),
             Description: document.getElementById("editFlowerDescription").value,
             FlowerImageUrl: document.getElementById("editFlowerImageUrl").value,
-            Price: parseFloat(document.querySelector(`tr[data-flower-id="${flowerId}"] td:nth-child(2)`).innerText.replace(/[^\d.]/g, "")), // Fetch existing Price
-            IsAvailable: true // Optional, depends on your requirements
+            Price: parseFloat(document.querySelector(`tr[data-flower-id="${flowerId}"] td:nth-child(2)`).innerText.replace(/[^\d.]/g, "")), 
+            IsAvailable: true 
         };
 
         fetch(`/Management/Flowers/Edit`, {
@@ -214,7 +210,6 @@
             .catch(error => console.error("Error saving flower:", error));
     });
 
-    // Delete Flower
     function deleteFlower(id) {
         if (confirm("Are you sure you want to delete this flower?")) {
             fetch(`/Management/Flowers/Delete/${id}`, {
@@ -232,7 +227,6 @@
         }
     }
 
-    // Bring Back Flower
     function bringBackFlower(id) {
         if (confirm("Are you sure you want to bring back this flower?")) {
             fetch(`/Management/Flowers/BringBack/${id}`, {
@@ -250,17 +244,16 @@
         }
     }
 
-    // Save Flower
     document.getElementById("saveFlowerButton").addEventListener("click", function () {
         const id = document.getElementById("flowerId").value;
         const flower = {
-            Id: id || 0, // Use 0 for new flowers
+            Id: id || 0, 
             FlowerType: document.getElementById("flowerType").value,
             Price: parseFloat(document.getElementById("flowerPrice").value),
             FlowerQuantity: parseInt(document.getElementById("flowerQuantity").value, 10),
             Description: document.getElementById("flowerDescription").value,
             FlowerImageUrl: document.getElementById("flowerImageUrl").value,
-            IsAvailable: true // Default for new flowers
+            IsAvailable: true 
         };
 
         const url = id ? `/Management/Flowers/Edit` : `/Management/Flowers/Add`;
@@ -276,7 +269,7 @@
         })
             .then(response => {
                 if (response.ok) {
-                    location.reload(); // Reload to reflect changes
+                    location.reload(); 
                 } else {
                     return response.json().then(data => {
                         alert("Error: " + (data.errors || "Failed to save flower"));
@@ -286,7 +279,6 @@
             .catch(error => console.error("Error saving flower:", error));
     });
 
-    // Open Modal
     function openFlowerModal(title, flower) {
         document.getElementById("flowerModalLabel").textContent = title;
         document.getElementById("flowerId").value = flower.Id || "";
@@ -303,7 +295,7 @@
         const filter = document.getElementById('filter').value;
         const sortOrder = document.getElementById('sortOrder').value;
         const url = `?filter=${filter}&sortOrder=${sortOrder}`;
-        window.location.href = url; // Redirect with query params
+        window.location.href = url; 
     }
 
 </script>

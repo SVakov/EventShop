@@ -46,17 +46,17 @@ namespace EventShopApp.Areas.RegisteredUsers.Controllers
             if (string.IsNullOrEmpty(userEmail))
             {
                 TempData["OrderError"] = "Error: Could not fetch user email.";
-                return RedirectToAction("Index", "Home"); // Redirect if user email is not found
+                return RedirectToAction("Index", "Home"); 
             }
 
             var orderModel = new OrderViewModel
             {
-                Email = userEmail // Pre-fill the email
+                Email = userEmail 
             };
 
             Console.WriteLine($"Order model being passed to view: {orderModel.Email}");
 
-            return View(orderModel); // Use the Order view for registered users
+            return View(orderModel); 
         }
 
 
@@ -78,7 +78,6 @@ namespace EventShopApp.Areas.RegisteredUsers.Controllers
             {
                 try
                 {
-                    // Check if Client exists
                     var client = _context.Clients.FirstOrDefault(c => c.Email == model.Email);
 
                     if (client == null)
@@ -95,7 +94,6 @@ namespace EventShopApp.Areas.RegisteredUsers.Controllers
                         await _context.SaveChangesAsync();
                     }
 
-                    // Create Order
                     var order = new Order
                     {
                         ClientId = client.Id,
@@ -106,7 +104,6 @@ namespace EventShopApp.Areas.RegisteredUsers.Controllers
                     _context.Orders.Add(order);
                     await _context.SaveChangesAsync();
 
-                    // Handle Cart Items
                     foreach (var cartItem in _cartService.GetCartItems())
                     {
                         if (cartItem.ItemType == OrderType.Flower)
@@ -149,11 +146,9 @@ namespace EventShopApp.Areas.RegisteredUsers.Controllers
                         }
                     }
 
-                    // Save changes and commit transaction
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    // Clear the cart after order is placed
                     _cartService.GetCartItems().Clear();
 
                     TempData["OrderConfirmation"] = "Your order has been made, we will start working on it as soon as possible.";

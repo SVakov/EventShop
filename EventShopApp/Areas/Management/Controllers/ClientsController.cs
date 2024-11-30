@@ -18,14 +18,12 @@ namespace EventShopApp.Areas.Management.Controllers
             _context = context;
         }
 
-        // Index page - List of clients
         public async Task<IActionResult> Index()
         {
             var clients = await _context.Clients.ToListAsync();
             return View(clients);
         }
 
-        // Add new client form
         public IActionResult Add()
         {
             return View();
@@ -35,7 +33,6 @@ namespace EventShopApp.Areas.Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(Client client)
         {
-            // Log the received client data
             Console.WriteLine($"Name: {client.Name}, Email: {client.Email}, Phone: {client.PhoneNumber}, Address: {client.Address}");
 
             if (ModelState.IsValid)
@@ -46,13 +43,11 @@ namespace EventShopApp.Areas.Management.Controllers
             }
             else
             {
-                // Log model state errors for further diagnosis
                 foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
                 {
-                    Console.WriteLine(error.ErrorMessage);  // Or use logging
+                    Console.WriteLine(error.ErrorMessage);  
                 }
 
-                // Return the form with validation errors
                 return View(client);
             }
         }

@@ -31,7 +31,7 @@
 
 <a id="addReinforcementLink" asp-area="Management" asp-controller="Employees" asp-action="Add" class="btn btn-primary">Add Reinforcement</a>
 
-<!-- Edit Employee Modal -->
+
 <div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -64,7 +64,7 @@
 </div>
 
 <script>
-    // Open the Edit Modal
+    
     function openEditModal(employeeId) {
         fetch(`/Management/Employees/Edit/${employeeId}`, { method: "GET" })
             .then(response => {
@@ -84,7 +84,7 @@
             .catch(error => console.error("Error fetching employee data:", error));
     }
 
-    // Save Changes
+    
     document.getElementById("saveEditEmployeeButton").addEventListener("click", function () {
         const employeeId = document.getElementById("editEmployeeId").value;
         const updatedEmployee = {
@@ -113,10 +113,9 @@
             .catch(error => console.error("Error saving employee changes:", error));
     });
 
-    // Redirect for Add Reinforcement button
     document.getElementById("addReinforcementLink").addEventListener("click", function (event) {
-        event.preventDefault(); // Prevent the default link behavior
-        window.location.href = '/Management/Employees/Add'; // Use JS to redirect
+        event.preventDefault(); 
+        window.location.href = '/Management/Employees/Add'; 
     });
 
 </script>

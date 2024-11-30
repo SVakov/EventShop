@@ -9,7 +9,7 @@
 else
 {
     <form id="cart-form" method="post">
-        @Html.AntiForgeryToken() <!-- Anti-forgery token added here -->
+        @Html.AntiForgeryToken() 
 
         <table class="table">
             <thead>
@@ -19,7 +19,7 @@ else
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Total</th>
-                    <th>Action</th> <!-- New column for Remove button -->
+                    <th>Action</th> 
                 </tr>
             </thead>
             <tbody>
@@ -35,7 +35,7 @@ else
                         <td>@item.Quantity</td>
                         <td>@item.TotalPrice.ToString("C")</td>
                         <td>
-                            <button onclick="removeFromCart(@item.Id)" class="btn btn-danger btn-sm">Remove</button> <!-- Remove button -->
+                            <button onclick="removeFromCart(@item.Id)" class="btn btn-danger btn-sm">Remove</button> 
                         </td>
                     </tr>
                 }
@@ -69,7 +69,6 @@ else
             .catch(error => console.error('Error:', error));
     }
 
-    // Handle Clear Cart
     document.getElementById("clear-cart-button").addEventListener("click", function () {
         fetch('/RegisteredUser/RegisteredUsersCart/ClearCart', {
             method: 'POST',
@@ -80,7 +79,7 @@ else
         })
             .then(response => {
                 if (response.ok) {
-                    location.reload(); // Reload the page to update the cart
+                    location.reload(); 
                 } else {
                     alert("Failed to clear the cart.");
                 }
@@ -88,8 +87,7 @@ else
             .catch(error => console.error('Error:', error));
     });
 
-    // Handle Order
     document.getElementById("order-button").addEventListener("click", function () {
-        window.location.href = '/RegisteredUser/RegisteredUsersCart/Order'; // Redirect to the order page
+        window.location.href = '/RegisteredUser/RegisteredUsersCart/Order'; 
     });
 </script>

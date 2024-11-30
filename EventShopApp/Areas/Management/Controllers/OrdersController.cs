@@ -1,15 +1,13 @@
-﻿using EventShopApp.Models;
-using EventShopApp.Enums;
+﻿using EventShopApp.Data;
+using EventShopApp.Models;
 using EventShopApp.Areas.Management.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using EventShopApp.Data;
-using Microsoft.AspNetCore.Authorization;
+using EventShopApp.Enums;
 
 namespace EventShopApp.Areas.Management.Controllers
 {
     [Area("Management")]
-    [Authorize]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,7 +17,7 @@ namespace EventShopApp.Areas.Management.Controllers
             _context = context;
         }
 
-        // Index page - List of orders
+        
         public async Task<IActionResult> Index()
         {
             var orders = await _context.Orders
@@ -33,101 +31,130 @@ namespace EventShopApp.Areas.Management.Controllers
             return View(orders);
         }
 
-        // Add new order form
-        public IActionResult Add()
+        
+        public async Task<IActionResult> Add()
         {
+            
+            ViewBag.Flowers = await _context.Flowers.ToListAsync();
+            ViewBag.Arrangements = await _context.ArrangementItems.ToListAsync();
+
             return View();
         }
 
-        // Save new order and order details
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(OrderViewModel model)
+        public async Task<IActionResult> Add(OrderViewModel orderViewModel)
         {
             if (ModelState.IsValid)
             {
-                // Check if the client already exists
-                var client = await _context.Clients
-                    .FirstOrDefaultAsync(c => c.Email == model.ClientEmail);
-
+                var client = await _context.Clients.FindAsync(orderViewModel.ClientId);
                 if (client == null)
                 {
-                    // Create new client if not found
                     client = new Client
                     {
-                        Name = model.ClientName,
-                        Email = model.ClientEmail,
-                        PhoneNumber = model.ClientPhoneNumber
+                        Name = orderViewModel.ClientName,
+                        Email = orderViewModel.ClientEmail,
+                        PhoneNumber = orderViewModel.ClientPhoneNumber,
+                        Address = orderViewModel.ClientAddress
                     };
+
                     _context.Clients.Add(client);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(); 
                 }
 
-                // Create new order
                 var order = new Order
                 {
                     ClientId = client.Id,
                     DateOfOrder = DateTime.Now,
-                    DeadLineDate = model.DeadLineDate,
-                    Status = OrderStatus.Pending
+                    DeadLineDate = orderViewModel.DeadLineDate,
+                    Status = OrderStatus.Pending 
                 };
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync();
 
-                // Add OrderDetails
-                if (model.OrderDetails != null)
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync(); 
+
+                foreach (var detail in orderViewModel.OrderDetails)
                 {
-                    foreach (var detail in model.OrderDetails)
+                    var orderDetail = new OrderDetail
                     {
-                        var orderDetail = new OrderDetail
+                        OrderId = order.Id,
+                        FlowerId = detail.FlowerId,
+                        OrderedFlowerQuantity = detail.OrderedFlowerQuantity,
+                        ArrangementItemsId = detail.ArrangementItemsId,
+                        OrderedArrangementQuantity = detail.OrderedArrangementQuantity,
+                        Type = detail.Type,
+                        IsPrepayed = orderViewModel.IsPrepayed 
+                    };
+
+                    _context.OrderDetails.Add(orderDetail);
+
+                    if (detail.FlowerId.HasValue)
+                    {
+                        var flower = await _context.Flowers
+                            .FirstOrDefaultAsync(f => f.Id == detail.FlowerId.Value);
+
+                        if (flower != null && flower.FlowerQuantity >= detail.OrderedFlowerQuantity)
                         {
-                            OrderId = order.Id,
-                            FlowerId = detail.FlowerId,
-                            OrderedFlowerQuantity = detail.OrderedFlowerQuantity,
-                            ArrangementItemsId = detail.ArrangementItemsId,
-                            OrderedArrangementQuantity = detail.OrderedArrangementQuantity,
-                            Type = detail.Type,
-                            IsPrepayed = model.IsPrepayed
-                        };
-                        _context.OrderDetails.Add(orderDetail);
+                            flower.FlowerQuantity -= detail.OrderedFlowerQuantity.Value; 
+                            _context.Flowers.Update(flower);
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("FlowerInventory", "Not enough stock for the selected flower.");
+                            return View(orderViewModel); 
+                        }
                     }
-                    await _context.SaveChangesAsync();
+
+                    if (detail.ArrangementItemsId.HasValue)
+                    {
+                        var arrangementItem = await _context.ArrangementItems
+                            .FirstOrDefaultAsync(a => a.Id == detail.ArrangementItemsId.Value);
+
+                        if (arrangementItem != null && arrangementItem.ArrangementItemsQuantity >= detail.OrderedArrangementQuantity)
+                        {
+                            arrangementItem.ArrangementItemsQuantity -= detail.OrderedArrangementQuantity.Value; 
+                            _context.ArrangementItems.Update(arrangementItem);
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("ArrangementInventory", "Not enough stock for the selected arrangement.");
+                            return View(orderViewModel); 
+                        }
+                    }
                 }
 
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync(); 
+
+                return RedirectToAction(nameof(Index)); 
             }
 
-            return View(model);
-        }
+            ViewBag.Flowers = await _context.Flowers.ToListAsync();
+            ViewBag.Arrangements = await _context.ArrangementItems.ToListAsync();
 
-        // Edit order status
-        public IActionResult Edit(int id)
-        {
-            var order = _context.Orders.Find(id);
-            if (order == null) return NotFound();
-            var viewModel = new OrderStatusViewModel
-            {
-                OrderId = order.Id,
-                Status = order.Status
-            };
-            return View(viewModel);
+            return View(orderViewModel);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(OrderStatusViewModel model)
+        public async Task<IActionResult> UpdateOrderStatus(int orderId, string status)
         {
-            if (ModelState.IsValid)
-            {
-                var order = await _context.Orders.FindAsync(model.OrderId);
-                if (order == null) return NotFound();
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
 
-                order.Status = model.Status;
-                _context.Update(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            if (order == null)
+            {
+                return NotFound();
             }
-            return View(model);
+
+            
+            order.Status = Enum.Parse<OrderStatus>(status);
+
+            _context.Update(order);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
         }
+
+
+
     }
 }

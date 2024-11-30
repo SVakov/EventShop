@@ -24,7 +24,6 @@ namespace EventShopApp.Areas.RegisteredUser.Controllers
 
         public async Task<IActionResult> Index(string sortOrder = "desc")
         {
-            // Get the current user's email
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
@@ -32,7 +31,6 @@ namespace EventShopApp.Areas.RegisteredUser.Controllers
                 return RedirectToAction("Login", "Account", new { area = "Identity" });
             }
 
-            // Fetch client information based on the email
             var client = _context.Clients.FirstOrDefault(c => c.Email == user.Email);
 
             if (client == null)
@@ -40,7 +38,6 @@ namespace EventShopApp.Areas.RegisteredUser.Controllers
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
 
-            // Fetch and transform the order details
             var rawOrders = _context.Orders
      .Where(o => o.ClientId == client.Id)
      .Join(_context.OrderDetails,
@@ -51,9 +48,9 @@ namespace EventShopApp.Areas.RegisteredUser.Controllers
              Order = order,
              Details = details
          })
-     .ToList(); // Materialize the data in memory
+     .ToList(); 
 
-            // Step 2: Process the data in memory
+            
             var orderDetails = rawOrders.Select(orderDetail =>
             {
                 string itemName;
@@ -79,7 +76,7 @@ namespace EventShopApp.Areas.RegisteredUser.Controllers
                 };
             }).ToList();
 
-            // Apply sorting
+            
             orderDetails = sortOrder.ToLower() switch
             {
                 "asc" => orderDetails.OrderBy(o => o.DateOfOrder).ToList(),

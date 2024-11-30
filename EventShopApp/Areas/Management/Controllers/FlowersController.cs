@@ -23,21 +23,18 @@ namespace EventShopApp.Areas.Management.Controllers
         // GET: Management/Flowers
         public async Task<IActionResult> Index(string filter = "all", string sortOrder = "price-asc")
         {
-            // Get the logged-in user's email
             var userEmail = User.Identity?.Name;
 
-            // Fetch the role from the Employee table
             var userRole = await _flowerService.GetEmployeeRoleByEmail(userEmail);
             if (userRole == null)
             {
-                return Forbid(); // If no employee is found, deny access
+                return Forbid(); 
             }
 
             
 
             var flowers = await _flowerService.GetAllFlowers();
 
-            // Apply filters
             if (filter == "available")
             {
                 flowers = flowers.Where(f => f.IsAvailable).ToList();
@@ -47,7 +44,6 @@ namespace EventShopApp.Areas.Management.Controllers
                 flowers = flowers.Where(f => !f.IsAvailable).ToList();
             }
 
-            // Apply sorting
             flowers = sortOrder switch
             {
                 "price-asc" => flowers.OrderBy(f => f.Price).ToList(),
@@ -57,7 +53,6 @@ namespace EventShopApp.Areas.Management.Controllers
                 _ => flowers.OrderBy(f => f.FlowerType).ToList()
             };
 
-            // Pass filter and sort values back to the view for proper UI feedback
             ViewBag.Filter = filter;
             ViewBag.SortOrder = sortOrder;
 
@@ -107,7 +102,6 @@ namespace EventShopApp.Areas.Management.Controllers
                     return NotFound(new { success = false, message = "Flower not found." });
                 }
 
-                // Update allowed fields
                 flower.FlowerQuantity = model.FlowerQuantity;
                 flower.Description = model.Description;
                 flower.FlowerImageUrl = model.FlowerImageUrl;

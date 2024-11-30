@@ -1,8 +1,86 @@
 ﻿@model EventShopApp.Areas.Management.ViewModels.OrderViewModel
 
-<h2>Add New Order</h2>
+@{
+    ViewData["Title"] = "Add New Order";
+}
+
+<h1>Add New Order</h1>
+
 <form asp-action="Add" method="post">
     @Html.AntiForgeryToken()
 
-    <!-- Client info -->
-    <div
+    
+    <div class="form-group">
+        <label for="ClientName">Client Name</label>
+        <input type="text" class="form-control" id="ClientName" name="ClientName" required />
+    </div>
+
+    <div class="form-group">
+        <label for="ClientSurname">Client Surname</label>
+        <input type="text" class="form-control" id="ClientSurname" name="ClientSurname" required />
+    </div>
+
+    <div class="form-group">
+        <label for="ClientEmail">Client Email</label>
+        <input type="email" class="form-control" id="ClientEmail" name="ClientEmail" required />
+    </div>
+
+    <div class="form-group">
+        <label for="ClientPhoneNumber">Client Phone Number</label>
+        <input type="text" class="form-control" id="ClientPhoneNumber" name="ClientPhoneNumber" required />
+    </div>
+
+    <div class="form-group">
+        <label for="ClientAddress">Client Address</label>
+        <input type="text" class="form-control" id="ClientAddress" name="ClientAddress" />
+    </div>
+
+    
+    <div class="form-group">
+        <label for="DeadLineDate">Deadline Date</label>
+        <input type="date" class="form-control" id="DeadLineDate" name="DeadLineDate" required />
+    </div>
+
+    <div class="form-group">
+        <label for="IsPrepayed">Is Prepayed?</label>
+        <select class="form-control" id="IsPrepayed" name="IsPrepayed" required>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+    </div>
+
+    
+    <div class="form-group">
+        <label for="FlowerId">Flower</label>
+        <select class="form-control" id="FlowerId" name="OrderDetails[0].FlowerId" required>
+            @foreach (var flower in ViewBag.Flowers as List<EventShopApp.Models.Flower>)
+            {
+                <option value="@flower.Id">@flower.FlowerType</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="OrderedFlowerQuantity">Flower Quantity</label>
+        <input type="number" class="form-control" id="OrderedFlowerQuantity" name="OrderDetails[0].OrderedFlowerQuantity" required />
+    </div>
+
+    
+    <div class="form-group">
+        <label for="ArrangementId">Arrangement</label>
+        <select class="form-control" id="ArrangementId" name="OrderDetails[0].ArrangementItemsId">
+            <option value="">None</option>
+            @foreach (var arrangement in ViewBag.Arrangements as List<EventShopApp.Models.ArrangementItem>)
+            {
+                <option value="@arrangement.Id">@arrangement.ArrangementItemType</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="OrderedArrangementQuantity">Arrangement Quantity</label>
+        <input type="number" class="form-control" id="OrderedArrangementQuantity" name="OrderDetails[0].OrderedArrangementQuantity" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Order</button>
+</form>
