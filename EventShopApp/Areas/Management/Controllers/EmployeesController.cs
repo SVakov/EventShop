@@ -71,9 +71,20 @@ namespace EventShopApp.Areas.Management.Controllers
             {
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    Console.WriteLine($"Error: {error.Description}");
                 }
                 return View(employee);
+            }
+
+            // Verify Password
+            var verifyPasswordResult = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, TemporaryPassword);
+            if (verifyPasswordResult != PasswordVerificationResult.Success)
+            {
+                Console.WriteLine("Password verification failed after user creation.");
+            }
+            else
+            {
+                Console.WriteLine("Password verification succeeded after user creation.");
             }
 
             // Assign Role
@@ -84,12 +95,21 @@ namespace EventShopApp.Areas.Management.Controllers
             }
             await _userManager.AddToRoleAsync(user, roleName);
 
+            // Debug Role Assignment
+            var roles = await _userManager.GetRolesAsync(user);
+            Console.WriteLine($"Assigned roles: {string.Join(", ", roles)}");
+
+            // Ensure Email Confirmed
+            user.EmailConfirmed = true;
+            await _userManager.UpdateAsync(user);
+
             // Add employee to database
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)

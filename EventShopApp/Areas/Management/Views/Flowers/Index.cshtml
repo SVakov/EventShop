@@ -3,6 +3,22 @@
 @using EventShopApp.Enums
 @inject IServiceProvider ServiceProvider
 
+@{
+    string employeeRole = null;
+
+    if (User.Identity?.IsAuthenticated ?? false)
+    {
+        var userEmail = User.Identity?.Name;
+
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var employee = context.Employees.FirstOrDefault(e => e.Email == userEmail);
+            employeeRole = employee?.Role.ToString();
+        }
+    }
+}
+
 <h2>Manage Flowers</h2>
 
 <div class="mb-3">
@@ -21,9 +37,10 @@
         <option value="quantity-desc" @(ViewBag.SortOrder == "quantity-desc" ? "selected" : "")>Quantity (High to Low)</option>
     </select>
 
-    
+    @if (employeeRole == "Owner" || employeeRole == "Manager")
+    {
         <a asp-action="Add" class="btn btn-primary" id="addFlowerButton">+ Add Flower</a>
-    
+    }
 </div>
 
 
@@ -35,8 +52,10 @@
                 <th>Name</th>
                 <th>Price</th>
                 <th>Quantity</th>
+                @if (employeeRole == "Owner" || employeeRole == "Manager")
+                    {
                 <th>Actions</th>
-            
+                    }
         
            
         </tr>
@@ -49,6 +68,8 @@
                 <td>@flower.Price.ToString("C")</td>
                 <td>@flower.FlowerQuantity</td>
                 <td>
+                    @if (employeeRole == "Owner" || employeeRole == "Manager")
+                    {
                     <button class="btn btn-sm btn-warning" onclick="openEditModal(@flower.Id)">Edit</button>
                     @if (flower.IsAvailable)
                     {
@@ -57,6 +78,7 @@
                     else
                     {
                         <button class="btn btn-sm btn-success" onclick="bringBackFlower(@flower.Id)">Bring Back</button>
+                    }
                     }
                 </td>
             </tr>

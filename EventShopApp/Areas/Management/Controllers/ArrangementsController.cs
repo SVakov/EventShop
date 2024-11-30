@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace EventShopApp.Areas.Management.Controllers
 {
     [Area("Management")]
-    [Authorize(Policy = "ManagementAccess")]
+    [Authorize]
     public class ArrangementsController : Controller
     {
         private readonly IArrangementService _arrangementService;

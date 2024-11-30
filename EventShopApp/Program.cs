@@ -28,7 +28,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.Password.RequiredLength = 8; // Set the minimum length for passwords
     options.Password.RequiredUniqueChars = 1;
 }).AddRoles<IdentityRole>()
-  .AddEntityFrameworkStores<ApplicationDbContext>();
+  .AddEntityFrameworkStores<ApplicationDbContext>()
+  .AddDefaultTokenProviders();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IFlowerService, FlowerService>();
 builder.Services.AddScoped<IArrangementService, ArrangementService>();
@@ -44,7 +45,7 @@ builder.Services.AddAuthorization(options =>
 
             var employee = dbContext.Employees.FirstOrDefault(e => e.Email == userEmail);
             return employee != null &&
-                   (employee.Role == EmployeeRole.Owner || employee.Role == EmployeeRole.Manager);
+                   (employee.Role == EmployeeRole.Owner);
         }));
 });
 

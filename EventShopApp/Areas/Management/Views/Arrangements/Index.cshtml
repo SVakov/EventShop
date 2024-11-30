@@ -1,4 +1,22 @@
 ﻿@model IEnumerable<EventShopApp.Models.ArrangementItem>
+@using EventShopApp.Data
+@using EventShopApp.Enums
+@inject IServiceProvider ServiceProvider
+@{
+    string employeeRole = null;
+
+    if (User.Identity?.IsAuthenticated ?? false)
+    {
+        var userEmail = User.Identity?.Name;
+
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var employee = context.Employees.FirstOrDefault(e => e.Email == userEmail);
+            employeeRole = employee?.Role.ToString();
+        }
+    }
+}
 
 <h2>Manage Arrangements</h2>
 
@@ -17,8 +35,10 @@
         <option value="quantity-asc" @(ViewBag.SortOrder == "quantity-asc" ? "selected" : "")>Quantity (Low to High)</option>
         <option value="quantity-desc" @(ViewBag.SortOrder == "quantity-desc" ? "selected" : "")>Quantity (High to Low)</option>
     </select>
-
-    <a asp-action="Add" class="btn btn-primary" id="addArrangementButton">+ Add Arrangement</a>
+    @if (employeeRole == "Owner" || employeeRole == "Manager")
+    {
+        <a asp-action="Add" class="btn btn-primary" id="addArrangementButton">+ Add Arrangement</a>
+    }
 </div>
 
 <table class="table">
@@ -27,7 +47,10 @@
             <th>Name</th>
             <th>Price</th>
             <th>Quantity</th>
-            <th>Actions</th>
+            @if (employeeRole == "Owner" || employeeRole == "Manager")
+            {
+                <th>Actions</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -38,14 +61,17 @@
                 <td>@arrangement.Price.ToString("C")</td>
                 <td>@arrangement.ArrangementItemsQuantity</td>
                 <td>
-                    <button class="btn btn-sm btn-warning" onclick="openEditModal(@arrangement.Id)">Edit</button>
-                    @if (arrangement.IsAvailable)
+                    @if (employeeRole == "Owner" || employeeRole == "Manager")
                     {
-                        <button class="btn btn-sm btn-danger" onclick="deleteArrangement(@arrangement.Id)">Delete</button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-sm btn-success" onclick="bringBackArrangement(@arrangement.Id)">Bring Back</button>
+                        <button class="btn btn-sm btn-warning" onclick="openEditModal(@arrangement.Id)">Edit</button>
+                        @if (arrangement.IsAvailable)
+                        {
+                            <button class="btn btn-sm btn-danger" onclick="deleteArrangement(@arrangement.Id)">Delete</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-sm btn-success" onclick="bringBackArrangement(@arrangement.Id)">Bring Back</button>
+                        }
                     }
                 </td>
             </tr>
