@@ -41,7 +41,7 @@ Initialize User Secrets for the project:
 Set the connection string for your local database using your credentials:
 ```dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=EventShopDB;Trusted_Connection=True;"```
 
-<!--Make sure to have the SQL installed-->
+-Make sure to have the SQL installed
 ```https://www.microsoft.com/en-us/sql-server/sql-server-downloads```
 
 ### Step 5: Apply Database Migrations
@@ -51,7 +51,7 @@ Apply pending migrations to set up the database schema:
 ### Step 6: Run the Application
 Start the application locally on your machine:
 ```dotnet run```
-<!--The application will be accessible at `http://localhost:5000` or another port depending on your configuration.-->
+-The application will be accessible at `http://localhost:5000` or another port depending on your configuration.
 
 ## Additional Notes
 - If you are using a different database or want to configure a new one, make sure to adjust the connection string accordingly.
