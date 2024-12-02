@@ -1,8 +1,7 @@
 ﻿@model EventShopApp.ViewModels.FlowerViewModel
 
-<h2>@Model.FlowerType</h2>
-
 <div class="flower-details">
+    <h2>@Model.FlowerType</h2>
     <img src="@Model.FlowerImageUrl" alt="@Model.FlowerType" />
     <p>@Model.Description</p>
     <p>Price: @Model.Price.ToString("C")</p>

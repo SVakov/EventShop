@@ -30,13 +30,13 @@ namespace EventShopApp.Services
         public async Task<IEnumerable<ArrangementViewModel>> GetAllAvailableArrangementsAsync()
         {
             return await _context.ArrangementItems
-                .Where(a => a.ArrangementItemsQuantity > 0)
+                .Where(a => a.ArrangementItemsQuantity > 0 && a.IsAvailable)
                 .Select(a => new ArrangementViewModel
                 {
                     Id = a.Id,
                     ArrangementItemType = a.ArrangementItemType,
                     Price = a.Price,
-                    Description = a.Description,
+                    Description = a.Description.Length > 20 ? a.Description.Substring(0, 20) + "..." : a.Description,
                     ArrangementItemImageUrl = a.ArrangementItemImageUrl,
                     ArrangementItemsQuantity = a.ArrangementItemsQuantity
                 })

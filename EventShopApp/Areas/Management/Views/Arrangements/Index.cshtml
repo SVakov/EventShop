@@ -35,11 +35,11 @@
         <option value="quantity-asc" @(ViewBag.SortOrder == "quantity-asc" ? "selected" : "")>Quantity (Low to High)</option>
         <option value="quantity-desc" @(ViewBag.SortOrder == "quantity-desc" ? "selected" : "")>Quantity (High to Low)</option>
     </select>
-    @if (employeeRole == "Owner" || employeeRole == "Manager")
-    {
-        <a asp-action="Add" class="btn btn-primary" id="addArrangementButton">+ Add Arrangement</a>
-    }
 </div>
+@if (employeeRole == "Owner" || employeeRole == "Manager")
+{
+    <a asp-action="Add" class="btn btn-primary" id="addArrangementButton"><strong>+</strong> Add Arrangement</a>
+}
 
 <table class="table">
     <thead>

@@ -26,8 +26,7 @@ public class ManagementAccessHandler : AuthorizationHandler<ManagementAccessRequ
 
         var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Email == email);
 
-        if (employee != null &&
-            (employee.Role == EmployeeRole.Owner || employee.Role == EmployeeRole.Manager))
+        if (employee != null && employee.Role == EmployeeRole.Owner)
         {
             context.Succeed(requirement);
         }

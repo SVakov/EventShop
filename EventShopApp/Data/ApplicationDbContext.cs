@@ -25,7 +25,7 @@ namespace EventShopApp.Data
 
 
 
-            // Seed Flowers
+            
             modelBuilder.Entity<Flower>().HasData(
                 new Flower
                 {
@@ -47,7 +47,7 @@ namespace EventShopApp.Data
                 }
             );
 
-            // Seed Arrangement Items
+            
             modelBuilder.Entity<ArrangementItem>().HasData(
                 new ArrangementItem
                 {
@@ -88,7 +88,7 @@ namespace EventShopApp.Data
             var hasher = new PasswordHasher<IdentityUser>();
             var ownerUser = new IdentityUser
             {
-                Id = Guid.NewGuid().ToString(), // Unique ID for the user
+                Id = Guid.NewGuid().ToString(),
                 UserName = "vakovslavcho@gmail.com",
                 NormalizedUserName = "VAKOVSLAVCHO@GMAIL.COM",
                 Email = "vakovslavcho@gmail.com",

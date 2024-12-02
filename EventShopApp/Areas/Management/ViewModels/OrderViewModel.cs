@@ -7,7 +7,7 @@ namespace EventShopApp.Areas.Management.ViewModels
 {
     public class OrderViewModel
     {
-        // Basic order info
+        
         public int Id { get; set; }
         public int ClientId { get; set; }
         public string ClientName { get; set; }

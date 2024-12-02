@@ -9,5 +9,7 @@
         public string FlowerImageUrl { get; set; }
 
         public int? FlowerQuantity { get; set; }
+
+        
     }
 }

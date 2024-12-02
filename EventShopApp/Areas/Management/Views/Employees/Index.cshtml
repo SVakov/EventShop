@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<EventShopApp.Models.Employee>
 
 <h2>Employees</h2>
+
+<a id="addReinforcementLink" asp-area="Management" asp-controller="Employees" asp-action="Add" class="btn btn-primary"><strong>+</strong> Add Reinforcement</a>
 <table class="table">
     <thead>
         <tr>
@@ -28,8 +30,6 @@
         }
     </tbody>
 </table>
-
-<a id="addReinforcementLink" asp-area="Management" asp-controller="Employees" asp-action="Add" class="btn btn-primary">Add Reinforcement</a>
 
 
 <div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">

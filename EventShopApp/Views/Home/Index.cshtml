@@ -11,7 +11,7 @@
     }
 
     .catalog-container {
-        background-color: #e0e0e0; /* Light gray background for rows */
+        background-color: #e0e0e0; 
         padding: 20px;
         margin-bottom: 20px;
     }
@@ -40,7 +40,7 @@
 </style>
 
 <div class="home-page">
-    <!-- Shop Name -->
+    
     <h1>Spring</h1>
 
     <!-- Flowers Catalog -->
@@ -69,22 +69,33 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const scrollCatalog = (catalog, speed) => {
             let scrollAmount = 0;
+            let direction = 1; // Start with scrolling right
+
             const interval = setInterval(() => {
-                catalog.scrollLeft += speed;
-                scrollAmount += Math.abs(speed);
-                if (scrollAmount >= catalog.scrollWidth) scrollAmount = 0;
+                // Scroll the catalog in the current direction
+                catalog.scrollLeft += direction * speed;
+
+                scrollAmount += Math.abs(direction * speed);
+
+                // If it reaches the end of the scroll, reverse direction
+                if (scrollAmount >= catalog.scrollWidth || scrollAmount <= 0) {
+                    direction *= -1;  
+                    scrollAmount = 0;
+                }
             }, 30);
         };
 
-        // Auto-scroll left for flowers and right for arrangements
         const flowersCatalog = document.querySelector('.flowers-catalog');
         const arrangementsCatalog = document.querySelector('.arrangements-catalog');
 
-        scrollCatalog(flowersCatalog, -1); // Move left
-        scrollCatalog(arrangementsCatalog, 1); // Move right
+        // Start scrolling in both directions
+        scrollCatalog(flowersCatalog, -1);  
+        scrollCatalog(arrangementsCatalog, 1); 
     });
 </script>
+
+
 

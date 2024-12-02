@@ -23,8 +23,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EventShopApp</title>
-    <link rel="stylesheet" href="~/css/css/all.min.css">
+    <title>@ViewData["Title"] Spring - EventShop</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EventShopApp.styles.css" asp-append-version="true" />
@@ -33,7 +37,9 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EventShopApp</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/Spring-icon.webp" alt="EventShopApp Logo" style="height: 60px;">
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -43,62 +49,64 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
                             @if (employeeRole == "Owner" || employeeRole == "Manager" || employeeRole == "Seller")
                             {
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="Management" asp-controller="Flowers" asp-action="Index">Flowers</a>
-                            }
-                            else
-                            {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Flowers" asp-action="Index">Flowers</a>
-                            }
-                        </li>
-                        <li class="nav-item">
-                            @if (employeeRole == "Owner" || employeeRole == "Manager" || employeeRole == "Seller")
-                            {
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="Management" asp-controller="Arrangements" asp-action="Index">Arrangements</a>
-                            }
-                            else
-                            {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Arrangements" asp-action="Index">Arrangements</a>
-                            }
-                            
-                        </li>
-                        @if (employeeRole == "Owner" || employeeRole == "Manager" || employeeRole == "Seller")
-                        {
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="Management" asp-controller="Employees" asp-action="Index">Employees</a>
                             </li>
-                        }
-                        @if (employeeRole == "Owner" || employeeRole == "Manager" || employeeRole == "Seller")
-                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="Management" asp-controller="Clients" asp-action="Index">Clients</a>
                             </li>
-                        }
-                        @if (employeeRole == "Owner" || employeeRole == "Manager" || employeeRole == "Seller")
-                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="Management" asp-controller="Orders" asp-action="Index">Orders</a>
                             </li>
-                        }
+                            }
+                            else
+                            {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Flowers" asp-action="Index">Flowers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Arrangements" asp-action="Index">Arrangements</a>
+                            </li>
+                            }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>                       
                     </ul>
+                    @if (!(employeeRole == "Owner" || employeeRole == "Manager" || employeeRole == "Seller"))
+                    {
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a asp-area="RegisteredUser" asp-controller="Profile" asp-action="Index" class="nav-link text-dark">
                                     <i class="fa fa-user-circle"></i> My Profile
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">
-                                    <i class="fas fa-shopping-cart"></i> Cart
-                                </a>
-                            </li>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="RegisteredUser" asp-controller="RegisteredUsersCart" asp-action="Index">
+                                        <i class="fas fa-shopping-cart"></i> Cart
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">
+                                        <i class="fas fa-shopping-cart"></i> Cart
+                                    </a>
+                                </li>
+                            }
 
                         </ul>
+                    }
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -112,7 +120,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - EventShopApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024  Spring - EventShop  <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

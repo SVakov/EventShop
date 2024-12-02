@@ -31,8 +31,8 @@ namespace EventShopApp.Models
 
         public bool IsAvailable
         {
-            get => ArrangementItemsQuantity > 0 && _isAvailable; 
-            set => _isAvailable = value;
+            get => _isAvailable;  
+            set => _isAvailable = value;  
         }
     }
 }

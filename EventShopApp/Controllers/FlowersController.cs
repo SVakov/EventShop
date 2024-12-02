@@ -16,8 +16,8 @@ namespace EventShopApp.Controllers
         // Fetch the list of flowers for the Index page
         public async Task<IActionResult> Index()
         {
-            var flowers = await _flowerService.GetAllAvailableFlowersAsync(); // Use ViewModel-compatible service
-            return View(flowers); // Index.cshtml expects IEnumerable<FlowerViewModel>
+            var flowers = await _flowerService.GetAllAvailableFlowersAsync(); 
+            return View(flowers); 
         }
 
         // Fetch details for a specific flower
@@ -30,7 +30,7 @@ namespace EventShopApp.Controllers
                 return NotFound();
             }
 
-            return View(flower); // Details.cshtml expects FlowerViewModel
+            return View(flower); 
         }
     }
 }

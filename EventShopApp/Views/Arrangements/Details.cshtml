@@ -1,8 +1,7 @@
 ﻿@model EventShopApp.ViewModels.ArrangementViewModel
 
-<h2>@Model.ArrangementItemType</h2>
-
 <div class="arrangement-details">
+    <h2>@Model.ArrangementItemType</h2>
     <img src="@Model.ArrangementItemImageUrl" alt="@Model.ArrangementItemType" />
     <p>@Model.Description</p>
     <p>Price: @Model.Price.ToString("C")</p>

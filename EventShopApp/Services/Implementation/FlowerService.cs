@@ -36,13 +36,13 @@ namespace EventShopApp.Services
         public async Task<IEnumerable<FlowerViewModel>> GetAllAvailableFlowersAsync()
         {
             return await _context.Flowers
-                .Where(f => f.FlowerQuantity > 0)
+                .Where(f => f.FlowerQuantity > 0 && f.IsAvailable)
                 .Select(f => new FlowerViewModel
                 {
                     Id = f.Id,
                     FlowerType = f.FlowerType,
                     Price = f.Price,
-                    Description = f.Description,
+                    Description = f.Description.Length>20? f.Description.Substring(0,20)+"...":f.Description,
                     FlowerImageUrl = f.FlowerImageUrl,
                     FlowerQuantity = f.FlowerQuantity
                 })
