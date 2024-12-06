@@ -1,6 +1,42 @@
 ﻿@model EventShopApp.ViewModels.HomeViewModel
 
 <style>
+    .gradient {
+        font-size: 2.5rem;
+        font-weight: bold;
+        position: relative;
+        background: linear-gradient(90deg, #ff7e5f, #feb47b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .gradient-custom {
+        font-size: 1.5rem;
+        font-weight: bold;
+        position: relative;
+        background: linear-gradient(90deg, #ff7e5f, #f7b42c, #57c1eb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+        .gradient-custom::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background: #f7b42c;
+            bottom: -5px;
+            left: 25%;
+            transition: width 0.3s;
+        }
+
+        .gradient-custom:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
     .home-page {
         text-align: center;
     }
@@ -41,7 +77,8 @@
 
 <div class="home-page">
     
-    <h1>Spring</h1>
+    <h1 class="gradient">Spring</h1>
+    <h4 class="gradient-custom">Keeping your life colourful</h4>
 
     <!-- Flowers Catalog -->
     <div class="catalog-container">
@@ -68,34 +105,7 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const scrollCatalog = (catalog, speed) => {
-            let scrollAmount = 0;
-            let direction = 1; // Start with scrolling right
-
-            const interval = setInterval(() => {
-                // Scroll the catalog in the current direction
-                catalog.scrollLeft += direction * speed;
-
-                scrollAmount += Math.abs(direction * speed);
-
-                // If it reaches the end of the scroll, reverse direction
-                if (scrollAmount >= catalog.scrollWidth || scrollAmount <= 0) {
-                    direction *= -1;  
-                    scrollAmount = 0;
-                }
-            }, 30);
-        };
-
-        const flowersCatalog = document.querySelector('.flowers-catalog');
-        const arrangementsCatalog = document.querySelector('.arrangements-catalog');
-
-        // Start scrolling in both directions
-        scrollCatalog(flowersCatalog, -1);  
-        scrollCatalog(arrangementsCatalog, 1); 
-    });
-</script>
+<script src="~/js/home-scrollCatalog.js"></script>
 
 
 

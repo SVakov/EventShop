@@ -1,0 +1,49 @@
+﻿.container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.detail-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.detail-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.detail-description {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.detail-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff7e5f;
+    margin-bottom: 10px;
+}
+
+.detail-stock {
+    font-size: 1rem;
+    color: #28a745;
+}
+
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+
+    .detail-image {
+        margin-bottom: 20px;
+    }
+}

@@ -1,131 +1,54 @@
 ﻿@model IEnumerable<EventShopApp.ViewModels.FlowerViewModel>
+<head>
+    <link href="~/css/product.css" rel="stylesheet" />
+</head>
 
-<h2>Our Flowers</h2>
+<h2 class="text-center my-4 title-underline">Our Flowers</h2>
 
-<div class="flower-list">
-    @foreach (var flower in Model)
-    {
-        <div class="flower-item">
-            <a asp-action="Details" asp-route-id="@flower.Id">
-                <img src="@flower.FlowerImageUrl" alt="@flower.FlowerType" />
-            </a>
-            <a asp-action="Details" asp-route-id="@flower.Id">
-                <h3>@flower.FlowerType</h3>
-            </a>
-            <p>@flower.Description</p>
-            <p>Price: @flower.Price.ToString("C")</p>
-            <p>In Stock: @flower.FlowerQuantity</p>
+<div class="container">
+    <div class="product-list">
+        @foreach (var flower in Model)
+        {
+            <div class="product-item">
+                <div class="card shadow-sm h-100">
+                    <a asp-action="Details" asp-route-id="@flower.Id" class="text-decoration-none">
+                        <img src="@flower.FlowerImageUrl" class="card-img-top" alt="@flower.FlowerType" />
+                    </a>
+                    <div class="card-body">
+                        <a asp-action="Details" asp-route-id="@flower.Id" class="text-decoration-none">
+                            <h5 class="card-title text-primary">@flower.FlowerType</h5>
+                        </a>
+                        <p class="card-text text-muted">@flower.Description</p>
+                        <p class="card-text"><strong>Price:</strong> @flower.Price.ToString("C")</p>
+                        <p class="card-text"><strong>In Stock:</strong> @flower.FlowerQuantity</p>
 
-            <!-- Quantity adjustment and action buttons -->
-            <div class="quantity-controls">
-                <button onclick="adjustQuantity(-1, @flower.Id, @flower.FlowerQuantity)">-</button>
-                <input type="number" id="quantity-@flower.Id" value="0" min="0" oninput="validateQuantity(@flower.Id, @flower.FlowerQuantity)" />
-                <button onclick="adjustQuantity(1, @flower.Id, @flower.FlowerQuantity)">+</button>
+                        <!-- Quantity adjustment and action buttons -->
+                        <div class="d-flex align-items-center mb-3">
+                            <button class="btn btn-outline-secondary" onclick="adjustQuantity(-1, @flower.Id, @flower.FlowerQuantity)">-</button>
+                            <input type="number" class="form-control mx-2 text-center" style="width: 70px;" id="quantity-@flower.Id" value="0" min="0" oninput="validateQuantity(@flower.Id, @flower.FlowerQuantity)" />
+                            <button class="btn btn-outline-secondary" onclick="adjustQuantity(1, @flower.Id, @flower.FlowerQuantity)">+</button>
+                        </div>
+
+                        <!-- Stock warning message -->
+                        <div id="stock-warning-@flower.Id" style="display: none; color: red;">
+                            Not enough stock available.
+                        </div>
+
+                        <!-- Add to Cart form -->
+                        <form id="cart-form-@flower.Id" asp-controller="Cart" asp-action="AddToCart" method="post" style="display: none;">
+                            <input type="hidden" name="Id" value="@flower.Id" />
+                            <input type="hidden" name="Name" value="@flower.FlowerType" />
+                            <input type="hidden" name="ImageUrl" value="@flower.FlowerImageUrl" />
+                            <input type="hidden" name="Price" value="@flower.Price" />
+                            <input type="hidden" name="Quantity" id="cart-quantity-@flower.Id" value="0" />
+                            <button type="button" class="btn btn-success w-100" onclick="addToCart(@flower.Id)" id="add-to-cart-button-@flower.Id">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-
-            <!-- Stock warning message -->
-            <div id="stock-warning-@flower.Id" style="display: none; color: red;">
-                Not enough stock available.
-            </div>
-
-            <!-- Add to Cart form -->
-            <form id="cart-form-@flower.Id" asp-controller="Cart" asp-action="AddToCart" method="post" style="display: none;">
-                <input type="hidden" name="Id" value="@flower.Id" />
-                <input type="hidden" name="Name" value="@flower.FlowerType" />
-                <input type="hidden" name="ImageUrl" value="@flower.FlowerImageUrl" />
-                <input type="hidden" name="Price" value="@flower.Price" />
-                <input type="hidden" name="Quantity" id="cart-quantity-@flower.Id" value="0" />
-                <button type="button" onclick="addToCart(@flower.Id)" id="add-to-cart-button-@flower.Id" class="btn btn-success">Add to Cart</button>
-            </form>
-        </div>
-    }
+        }
+    </div>
 </div>
 
-<script>
-    function adjustQuantity(change, flowerId, maxQuantity) {
-        const quantityInput = document.getElementById("quantity-" + flowerId);
-        const cartQuantityInput = document.getElementById("cart-quantity-" + flowerId);
+<script src="~/js/flowers-addToCart.js"></script>
 
-        // Adjust quantity
-        let newQuantity = parseInt(quantityInput.value) + change;
-        if (newQuantity < 0) newQuantity = 0;
-
-        quantityInput.value = newQuantity;
-        cartQuantityInput.value = newQuantity;
-
-        validateQuantity(flowerId, maxQuantity);
-    }
-
-    function validateQuantity(flowerId, maxQuantity) {
-        const quantityInput = document.getElementById("quantity-" + flowerId);
-        const form = document.getElementById("cart-form-" + flowerId);
-        const addToCartButton = document.getElementById("add-to-cart-button-" + flowerId);
-        const warning = document.getElementById("stock-warning-" + flowerId);
-
-        const quantity = parseInt(quantityInput.value);
-
-        // Show form if quantity > 0, but check stock availability
-        form.style.display = quantity > 0 ? "block" : "none";
-        if (quantity > maxQuantity) {
-            addToCartButton.disabled = true;
-            warning.style.display = "block";
-        } else {
-            addToCartButton.disabled = false;
-            warning.style.display = "none";
-        }
-    }
-
-    function addToCart(flowerId) {
-        const form = document.getElementById("cart-form-" + flowerId);
-        const formData = new FormData(form);
-
-        fetch(form.action, {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Item added to cart successfully!");
-                } else {
-                    alert("Failed to add item to cart.");
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-</script>
-
-<style>
-    .flower-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-
-    .flower-item {
-        width: 200px;
-        text-align: center;
-    }
-
-        .flower-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-    .quantity-controls {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-        .quantity-controls button {
-            width: 30px;
-            height: 30px;
-        }
-
-    .flower-item input[type="number"] {
-        width: 60px;
-        text-align: center;
-    }
-</style>

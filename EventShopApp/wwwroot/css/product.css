@@ -1,0 +1,147 @@
+﻿/* General Styles for Both Flowers and Arrangements */
+.title-underline {
+    font-size: 2.5rem;
+    font-weight: bold;
+    position: relative;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+    .title-underline::after {
+        content: '';
+        position: absolute;
+        width: 50%;
+        height: 3px;
+        background: #feb47b;
+        bottom: -5px;
+        left: 25%;
+        transition: width 0.3s;
+    }
+
+    .title-underline:hover::after {
+        width: 100%;
+        left: 0;
+    }
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.product-item {
+    width: 200px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+}
+
+    .product-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-item img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 1px solid #ddd;
+    }
+
+    /* Typography */
+    .product-item h3 {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin: 10px 0;
+        color: #333;
+    }
+
+    .product-item p {
+        font-size: 0.9rem;
+        color: #555;
+        margin: 5px 0;
+    }
+
+    /* Pricing and Stock Information */
+    .product-item .price {
+        font-weight: bold;
+        color: #ff7e5f;
+    }
+
+    .product-item .in-stock {
+        color: #28a745;
+    }
+
+/* Quantity Controls */
+.quantity-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+    .quantity-controls button {
+        width: 30px;
+        height: 30px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        transition: background-color 0.3s;
+    }
+
+        .quantity-controls button:hover {
+            background-color: #ff7e5f;
+            color: #fff;
+            border-color: #ff7e5f;
+        }
+
+.product-item input[type="number"] {
+    width: 60px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+/* Add to Cart Button */
+.product-item .btn-success {
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    color: #fff;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+    .product-item .btn-success:hover {
+        background: #ff7e5f;
+        transform: scale(1.05);
+    }
+
+/* Stock Warning */
+#stock-warning {
+    display: none;
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 750px) {
+    .product-list {
+        gap: 15px;
+    }
+
+    .product-item {
+        width: 90%;
+    }
+}
+

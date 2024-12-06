@@ -1,37 +1,45 @@
 ﻿@model IEnumerable<EventShopApp.Models.Employee>
 
-<h2>Employees</h2>
+<div class="container my-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary">Employees</h2>
+        <a id="addReinforcementLink" asp-area="Management" asp-controller="Employees" asp-action="Add" class="btn btn-success">
+            <strong>+</strong> Add Reinforcement
+        </a>
+    </div>
 
-<a id="addReinforcementLink" asp-area="Management" asp-controller="Employees" asp-action="Add" class="btn btn-primary"><strong>+</strong> Add Reinforcement</a>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Surname</th>
-            <th>Role</th>
-            <th>Hire date</th>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var employee in Model)
-        {
-            <tr class="@((employee.IsFired) ? "text-muted" : "")">
-                <td>@employee.Name</td>
-                <td>@employee.Surname</td>
-                <td>@employee.Role.ToString()</td>
-                <td>@employee.HireDate</td>
-                <td>@employee.Email</td>
-                <td>
-                    <button class="btn btn-sm btn-primary" onclick="openEditModal(@employee.Id)">Edit</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-
+    <!-- Employees Table -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Role</th>
+                    <th>Hire Date</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var employee in Model)
+                {
+                    <tr class="@((employee.IsFired) ? "table-secondary" : "")">
+                        <td>@employee.Name</td>
+                        <td>@employee.Surname</td>
+                        <td>@employee.Role.ToString()</td>
+                        <td>@employee.HireDate.ToShortDateString()</td>
+                        <td>@employee.Email</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="openEditModal(@employee.Id)">Edit</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 <div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -63,59 +71,4 @@
     </div>
 </div>
 
-<script>
-    
-    function openEditModal(employeeId) {
-        fetch(`/Management/Employees/Edit/${employeeId}`, { method: "GET" })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch employee data.");
-                }
-                return response.json();
-            })
-            .then(employee => {
-                document.getElementById("editEmployeeId").value = employee.id;
-                document.getElementById("editRole").value = employee.role;
-                document.getElementById("editIsFired").checked = employee.isFired;
-
-                const editModal = new bootstrap.Modal(document.getElementById("editEmployeeModal"));
-                editModal.show();
-            })
-            .catch(error => console.error("Error fetching employee data:", error));
-    }
-
-    
-    document.getElementById("saveEditEmployeeButton").addEventListener("click", function () {
-        const employeeId = document.getElementById("editEmployeeId").value;
-        const updatedEmployee = {
-            Id: employeeId,
-            Role: document.getElementById("editRole").value,
-            IsFired: document.getElementById("editIsFired").checked
-        };
-
-        fetch(`/Management/Employees/Edit`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
-            },
-            body: JSON.stringify(updatedEmployee)
-        })
-            .then(response => {
-                if (response.ok) {
-                    location.reload(); // Refresh the page to show updated data
-                } else {
-                    return response.json().then(data => {
-                        alert("Error: " + (data.errors || "Failed to save changes"));
-                    });
-                }
-            })
-            .catch(error => console.error("Error saving employee changes:", error));
-    });
-
-    document.getElementById("addReinforcementLink").addEventListener("click", function (event) {
-        event.preventDefault(); 
-        window.location.href = '/Management/Employees/Add'; 
-    });
-
-</script>
+<script src="~/js/management-employees.js"></script>

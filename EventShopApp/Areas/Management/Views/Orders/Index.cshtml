@@ -5,130 +5,115 @@
     ViewData["Title"] = "Orders";
 }
 
-<h1>Orders</h1>
+<div class="container my-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary">Orders</h1>
+        <a href="@Url.Action("Add", "Orders", new { area = "Management" })" class="btn btn-success">
+            <strong>+</strong> Add Order
+        </a>
+    </div>
 
+    <!-- Orders Table -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Client</th>
+                    <th>Client Address</th>
+                    <th>Flowers</th>
+                    <th>Flower Quantity</th>
+                    <th>Arrangements</th>
+                    <th>Arrangement Quantity</th>
+                    <th>Date of Order</th>
+                    <th>Deadline Date</th>
+                    <th>Prepayed?</th>
+                    <th>Order Status</th>
+                    <th>Total Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr id="order-@order.Id">
+                        <td>@order.Client.Name</td>
 
-<a href="@Url.Action("Add", "Orders", new { area = "Management" })" class="btn btn-primary mb-3"><strong>+</strong> Add Order</a>
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Client</th>
-            <th>Client Address</th> 
-            <th>Flowers</th>
-            <th>Flower Quantity</th>
-            <th>Arrangements</th>
-            <th>Arrangement Quantity</th>
-            <th>Date of Order</th>
-            <th>Deadline Date</th>
-            <th>Prepayed?</th>
-            <th>Order Status</th>
-            <th>Total Amount</th> 
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var order in Model)
-        {
-            <tr id="order-@order.Id">
-                <td>@order.Client.Name</td>
-
-                
-                <td>
-                    @if (!string.IsNullOrEmpty(order.Client.Address))
-                    {
-                        <div>@order.Client.Address</div>
-                    }
-                    else
-                    {
-                        <div>N/A</div>
-                    }
-                </td>
-
-                <td>
-                    @foreach (var detail in order.OrderDetails)
-                    {
-                        @if (detail.Flower != null)
-                        {
-                            <div>@detail.Flower.FlowerType</div>
-                        }
-                    }
-                </td>
-
-                <td>
-                    @foreach (var detail in order.OrderDetails)
-                    {
-                        @if (detail.OrderedFlowerQuantity != null)
-                        {
-                            <div>@detail.OrderedFlowerQuantity</div>
-                        }
-                    }
-                </td>
-
-                <td>
-                    @foreach (var detail in order.OrderDetails)
-                    {
-                        @if (detail.ArrangementItem != null)
-                        {
-                            <div>@detail.ArrangementItem.ArrangementItemType</div>
-                        }
-                    }
-                </td>
-
-                <td>
-                    @foreach (var detail in order.OrderDetails)
-                    {
-                        @if (detail.OrderedArrangementQuantity != null)
-                        {
-                            <div>@detail.OrderedArrangementQuantity</div>
-                        }
-                    }
-                </td>
-
-                <td>@order.DateOfOrder.ToShortDateString()</td>
-                <td>@order.DeadLineDate.ToShortDateString()</td>
-                <td>@(order.OrderDetails.FirstOrDefault()?.IsPrepayed == true ? "Yes" : "No")</td>
-
-                <td>
-                    <select class="form-control status-dropdown" data-order-id="@order.Id">
-                        @foreach (var status in Enum.GetValues(typeof(OrderStatus)).Cast<OrderStatus>())
-                        {
-                            <option value="@status" @(order.Status == status ? "selected" : "")>@status</option>
-                        }
-                    </select>
-                </td>
-
-                
-                <td>
-                    @{
-                        decimal totalAmount = 0;
-                        foreach (var detail in order.OrderDetails)
-                        {
-                            
-                            if (detail.Flower != null && detail.OrderedFlowerQuantity.HasValue)
+                        <td>
+                            @if (!string.IsNullOrEmpty(order.Client.Address))
                             {
-                                totalAmount += detail.Flower.Price * detail.OrderedFlowerQuantity.Value;
+                                <div>@order.Client.Address</div>
                             }
-
-                            
-                            if (detail.ArrangementItem != null && detail.OrderedArrangementQuantity.HasValue)
+                            else
                             {
-                                totalAmount += detail.ArrangementItem.Price * detail.OrderedArrangementQuantity.Value;
+                                <div>N/A</div>
                             }
-                        }
-                    }
-                    <div>@totalAmount.ToString("C2")</div> 
-                </td>
+                        </td>
 
-                <td>
-                    
-                    <button class="btn btn-success btn-sm save-btn" data-order-id="@order.Id" style="display:none;">Save</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        <td>
+                            @foreach (var detail in order.OrderDetails.Where(d => d.Flower != null))
+                            {
+                                <div>@detail.Flower.FlowerType</div>
+                            }
+                        </td>
+
+                        <td>
+                            @foreach (var detail in order.OrderDetails.Where(d => d.OrderedFlowerQuantity != null))
+                            {
+                                <div>@detail.OrderedFlowerQuantity</div>
+                            }
+                        </td>
+
+                        <td>
+                            @foreach (var detail in order.OrderDetails.Where(d => d.ArrangementItem != null))
+                            {
+                                <div>@detail.ArrangementItem.ArrangementItemType</div>
+                            }
+                        </td>
+
+                        <td>
+                            @foreach (var detail in order.OrderDetails.Where(d => d.OrderedArrangementQuantity != null))
+                            {
+                                <div>@detail.OrderedArrangementQuantity</div>
+                            }
+                        </td>
+
+                        <td>@order.DateOfOrder.ToShortDateString()</td>
+                        <td>@order.DeadLineDate.ToShortDateString()</td>
+                        <td>@(order.OrderDetails.FirstOrDefault()?.IsPrepayed == true ? "Yes" : "No")</td>
+
+                        <td>
+                            <select class="form-select form-select-sm status-dropdown" data-order-id="@order.Id">
+                                @foreach (var status in Enum.GetValues(typeof(OrderStatus)).Cast<OrderStatus>())
+                                {
+                                    <option value="@status" @(order.Status == status ? "selected" : "")>@status</option>
+                                }
+                            </select>
+                        </td>
+
+                        <td>
+                            @{
+                                var totalAmount = order.OrderDetails
+                                .Where(d => (d.Flower != null && d.OrderedFlowerQuantity.HasValue) ||
+                                (d.ArrangementItem != null && d.OrderedArrangementQuantity.HasValue))
+                                .Sum(d =>
+                                (d.Flower != null ? d.Flower.Price * d.OrderedFlowerQuantity.GetValueOrDefault(0) : 0) +
+                                (d.ArrangementItem != null ? d.ArrangementItem.Price * d.OrderedArrangementQuantity.GetValueOrDefault(0) : 0));
+                            }
+                            <div>@totalAmount.ToString("C2")</div>
+                        </td>
+
+                        <td>
+                            <button class="btn btn-success btn-sm save-btn mt-1" data-order-id="@order.Id" style="display:none;">
+                                Save
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 @section Scripts {
     <script>
