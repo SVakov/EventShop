@@ -111,7 +111,7 @@ namespace EventShopApp.Areas.Management.Controllers
         public async Task<IActionResult> BringBack(int id)
         {
             await _arrangementService.BringBackArrangement(id);
-            return Ok(new { success = true, message = "Arrangement restored successfully" });
+            return RedirectToAction("Index");
         }
     }
 }

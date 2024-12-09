@@ -11,6 +11,7 @@ namespace EventShopApp.Models
         public int Id { get; set; }
 
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = ErrorMessages.OrderIdRequired)]
         public int OrderId { get; set; }
 
         [ForeignKey("OrderId")]
@@ -24,6 +25,7 @@ namespace EventShopApp.Models
         public int? OrderedFlowerQuantity { get; set; }
 
         [Required]
+        [EnumDataType(typeof(OrderType), ErrorMessage = ErrorMessages.InvalidOrderType)]
         public OrderType Type { get; set; }
 
         public int? ArrangementItemsId { get; set; }

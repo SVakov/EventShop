@@ -10,18 +10,18 @@ namespace EventShopApp.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(ValidationConstants.MaxFlowerTypeLength, ErrorMessage = "Flower Type cannot be longer than 20 characters.")]
+        [StringLength(ValidationConstants.MaxFlowerTypeLength, ErrorMessage = ErrorMessages.MaxFlowerTypeLength)]
         public required string FlowerType { get; set; }
 
         [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be higher than zero.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = ErrorMessages.PriceMustBePositive)]
         public decimal Price { get; set; }
 
-        [StringLength(ValidationConstants.MaxDescriptionLength, ErrorMessage = "Description cannot be longer than 200 characters.")]
+        [StringLength(ValidationConstants.MaxDescriptionLength, ErrorMessage = ErrorMessages.MaxDescriptionLength)]
         public string? Description { get; set; }
 
         [Required]
-        [Range(0, ValidationConstants.MaxFlowerQuantity, ErrorMessage = "Quantity must be between 0 and 1000.")]
+        [Range(0, ValidationConstants.MaxFlowerQuantity, ErrorMessage = ErrorMessages.FlowerQuantityRange)]
         public int FlowerQuantity { get; set; }
 
         [Url]

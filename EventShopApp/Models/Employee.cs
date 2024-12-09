@@ -11,22 +11,22 @@ namespace EventShopApp.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(ValidationConstants.MaxNameLength, ErrorMessage = "Name cannot be longer than 50 characters.")]
+        [StringLength(ValidationConstants.MaxNameLength, ErrorMessage = ErrorMessages.MaxNameLength)]
         public required string Name { get; set; }
 
-        [StringLength(ValidationConstants.MaxSurnameLength, ErrorMessage = "Surname cannot be longer than 50 characters.")]
+        [StringLength(ValidationConstants.MaxSurnameLength, ErrorMessage = ErrorMessages.MaxSurnameLength)]
         public string? Surname { get; set; }
 
         [Required]
         public required EmployeeRole Role { get; set; }
 
         [Required]
-        [StringLength(ValidationConstants.MaxPhoneNumberLength, ErrorMessage = "Phone number cannot be longer than 15 characters.")]
+        [StringLength(ValidationConstants.MaxPhoneNumberLength, ErrorMessage = ErrorMessages.MaxPhoneNumberLength)]
         public required string PhoneNumber { get; set; }
 
         [Required]
-        [StringLength(ValidationConstants.MaxEmailLength, ErrorMessage = "Email cannot be longer than 50 characters.")]
-        [EmailAddress(ErrorMessage = "Invalid email address format.")]
+        [StringLength(ValidationConstants.MaxEmailLength, ErrorMessage = ErrorMessages.MaxEmailLength)]
+        [EmailAddress(ErrorMessage = ErrorMessages.InvalidEmailFormat)]
         public required string Email { get; set; }
 
         [Required]

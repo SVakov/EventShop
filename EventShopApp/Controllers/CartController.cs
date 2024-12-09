@@ -59,7 +59,11 @@ namespace EventShopApp.Controllers
                 return RedirectToAction("Order", "RegisteredUsersCart", new { area = "RegisteredUser" });
             }
 
-            return View(new OrderViewModel());
+            var model = new OrderViewModel
+            {
+                DeadLineDate = DateTime.UtcNow.Date // Sets today's date as the default
+            };
+            return View(model);
         }
 
         [HttpPost]

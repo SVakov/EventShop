@@ -41,22 +41,24 @@ namespace EventShopApp.Areas.RegisteredUsers.Controllers
         {
             var userEmail = _userManager.GetUserName(User);
 
-           
-
             if (string.IsNullOrEmpty(userEmail))
             {
                 TempData["OrderError"] = "Error: Could not fetch user email.";
-                return RedirectToAction("Index", "Home"); 
+                return RedirectToAction("Index", "Home");
             }
+
+            var client = _context.Clients.FirstOrDefault(c => c.Email == userEmail);
 
             var orderModel = new OrderViewModel
             {
-                Email = userEmail 
+                Email = userEmail,
+                Name = client?.Name,
+                Surname = client?.Surname,
+                PhoneNumber = client?.PhoneNumber,
+                Address = client?.Address
             };
 
-            Console.WriteLine($"Order model being passed to view: {orderModel.Email}");
-
-            return View(orderModel); 
+            return View(orderModel);
         }
 
 

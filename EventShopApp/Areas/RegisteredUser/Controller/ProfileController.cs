@@ -35,20 +35,21 @@ namespace EventShopApp.Areas.RegisteredUser.Controllers
 
             if (client == null)
             {
-                return RedirectToAction("Index", "Home", new { area = "" });
+                TempData["Message"] = "You have to be a client in order to visit the 'My Profile' page.";
+                return RedirectToAction("Index", "Home", new {area = ""});
             }
 
             var rawOrders = _context.Orders
-     .Where(o => o.ClientId == client.Id)
-     .Join(_context.OrderDetails,
-         order => order.Id,
-         details => details.OrderId,
-         (order, details) => new
-         {
-             Order = order,
-             Details = details
-         })
-     .ToList(); 
+                .Where(o => o.ClientId == client.Id)
+                .Join(_context.OrderDetails,
+                     order => order.Id,
+                     details => details.OrderId,
+                    (order, details) => new
+                    {
+                        Order = order,
+                         Details = details
+                    })
+                .ToList(); 
 
             
             var orderDetails = rawOrders.Select(orderDetail =>

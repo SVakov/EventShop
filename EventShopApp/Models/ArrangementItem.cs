@@ -10,18 +10,18 @@ namespace EventShopApp.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(ValidationConstants.MaxArrangementItemTypeLength, ErrorMessage = "Arrangement Type cannot be longer than 50 characters.")]
+        [StringLength(ValidationConstants.MaxArrangementItemTypeLength, ErrorMessage = ErrorMessages.MaxArrangementItemTypeLength)]
         public required string ArrangementItemType { get; set; }
 
         [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be higher than zero.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = ErrorMessages.PriceMustBePositive)]
         public decimal Price { get; set; }
 
-        [StringLength(ValidationConstants.MaxDescriptionLength, ErrorMessage = "Description cannot be longer than 200 characters.")]
+        [StringLength(ValidationConstants.MaxDescriptionLength, ErrorMessage = ErrorMessages.MaxDescriptionLength)]
         public string? Description { get; set; }
 
         [Required]
-        [Range(0, ValidationConstants.MaxArrangementItemsQuantity, ErrorMessage = "Quantity must be between 0 and 500.")]
+        [Range(0, ValidationConstants.MaxArrangementItemsQuantity, ErrorMessage = ErrorMessages.ArrangementQuantityRange)]
         public int ArrangementItemsQuantity { get; set; }
 
         [Url]

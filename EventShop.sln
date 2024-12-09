@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventShopApp", "EventShopApp\EventShopApp.csproj", "{E5BC1C37-BB96-4BF4-9726-CA02AEAF7DED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventShopApp", "EventShopApp\EventShopApp.csproj", "{E5BC1C37-BB96-4BF4-9726-CA02AEAF7DED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventShopApp.Test", "EventShopApp.Test\EventShopApp.Test.csproj", "{23C95D20-7990-4847-BCE9-51BB4B9DC8CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{E5BC1C37-BB96-4BF4-9726-CA02AEAF7DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5BC1C37-BB96-4BF4-9726-CA02AEAF7DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5BC1C37-BB96-4BF4-9726-CA02AEAF7DED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23C95D20-7990-4847-BCE9-51BB4B9DC8CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23C95D20-7990-4847-BCE9-51BB4B9DC8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23C95D20-7990-4847-BCE9-51BB4B9DC8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23C95D20-7990-4847-BCE9-51BB4B9DC8CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

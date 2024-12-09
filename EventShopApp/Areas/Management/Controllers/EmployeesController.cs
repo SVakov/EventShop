@@ -39,9 +39,6 @@ namespace EventShopApp.Areas.Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(Employee employee, string TemporaryPassword)
         {
-            Console.WriteLine("Add action triggered with:");
-            Console.WriteLine($"Name: {employee.Name}, Surname: {employee.Surname}, Email: {employee.Email}");
-            Console.WriteLine($"PhoneNumber: {employee.PhoneNumber}, Role: {employee.Role}, TemporaryPassword: {TemporaryPassword}");
 
             if (!ModelState.IsValid)
             {
@@ -71,16 +68,6 @@ namespace EventShopApp.Areas.Management.Controllers
                     Console.WriteLine($"Error: {error.Description}");
                 }
                 return View(employee);
-            }
-
-            var verifyPasswordResult = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, TemporaryPassword);
-            if (verifyPasswordResult != PasswordVerificationResult.Success)
-            {
-                Console.WriteLine("Password verification failed after user creation.");
-            }
-            else
-            {
-                Console.WriteLine("Password verification succeeded after user creation.");
             }
 
             var roleName = employee.Role.ToString();

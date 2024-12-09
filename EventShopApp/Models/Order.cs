@@ -1,4 +1,5 @@
-﻿using EventShopApp.Enums;
+﻿using EventShopApp.Constants;
+using EventShopApp.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,7 @@ namespace EventShopApp.Models
         public int Id { get; set; }
 
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = ErrorMessages.ClientIdRequired)]
         public int ClientId { get; set; }
 
         [ForeignKey("ClientId")]
@@ -25,5 +27,6 @@ namespace EventShopApp.Models
         public OrderStatus Status { get; set; }
 
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
     }
 }

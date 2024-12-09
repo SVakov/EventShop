@@ -51,9 +51,9 @@ namespace EventShopApp.Services.Implementation
 
         public async Task<bool> SubmitOrder(OrderViewModel model)
         {
-            Console.WriteLine("SubmitOrder in CartService triggered.");
-            Console.WriteLine($"CartItems Count: {CartItems.Count}");
-            Console.WriteLine($"Order Details - Email: {model.Email}, Name: {model.Name}");
+            //Console.WriteLine("SubmitOrder in CartService triggered.");
+            //Console.WriteLine($"CartItems Count: {CartItems.Count}");
+            //Console.WriteLine($"Order Details - Email: {model.Email}, Name: {model.Name}");
 
             if (!CartItems.Any()) return false;
 
@@ -92,6 +92,7 @@ namespace EventShopApp.Services.Implementation
                     if (flower != null && flower.FlowerQuantity >= cartItem.Quantity)
                     {
                         flower.FlowerQuantity -= cartItem.Quantity;
+                        _context.Flowers.Update(flower);
 
                         _context.OrderDetails.Add(new OrderDetail
                         {
@@ -111,6 +112,7 @@ namespace EventShopApp.Services.Implementation
                     if (arrangement != null && arrangement.ArrangementItemsQuantity >= cartItem.Quantity)
                     {
                         arrangement.ArrangementItemsQuantity -= cartItem.Quantity;
+                        _context.ArrangementItems.Update(arrangement);
 
                         _context.OrderDetails.Add(new OrderDetail
                         {

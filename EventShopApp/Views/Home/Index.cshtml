@@ -1,5 +1,10 @@
 ﻿@model EventShopApp.ViewModels.HomeViewModel
-
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @TempData["Message"]
+    </div>
+}
 <style>
     .gradient {
         font-size: 2.5rem;
