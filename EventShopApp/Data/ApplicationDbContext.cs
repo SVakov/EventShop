@@ -22,7 +22,7 @@ namespace EventShopApp.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-  
+
             //modelBuilder.Entity<Flower>().HasData(
             //    new Flower
             //    {
@@ -44,7 +44,7 @@ namespace EventShopApp.Data
             //    }
             //);
 
-            
+
             //modelBuilder.Entity<ArrangementItem>().HasData(
             //    new ArrangementItem
             //    {
