@@ -26,7 +26,10 @@
     </div>
     <div class="form-group">
         <label>Deadline Date</label>
-        <input type="date" name="DeadLineDate" value="@Model.DeadLineDate" class="form-control" required />
+        <input type="date" name="DeadLineDate" value="@Model.DeadLineDate" class="form-control" id="DeadLineDate" required />
+        <small id="deadlineError" class="text-danger" style="display:none;">
+            Deadline date cannot be earlier than today.
+        </small>
     </div>
 
     <button type="button" class="btn btn-primary" onclick="submitOrder()">Order</button>
@@ -34,3 +37,4 @@
 </form>
 
 <script src="~/js/regUser-cartOrder.js"></script>
+<script src="~/js/deadLineDateValidation.js"></script>

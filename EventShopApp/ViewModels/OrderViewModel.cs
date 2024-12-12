@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventShopApp.Constants;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventShopApp.ViewModels
 {

@@ -38,7 +38,10 @@
     
     <div class="form-group">
         <label for="DeadLineDate">Deadline Date</label>
-        <input type="date" class="form-control" id="DeadLineDate" name="DeadLineDate" required />
+        <input type="date" class="form-control" id="DeadLineDate" name="DeadLineDate" required/>
+        <small id="deadlineError" class="text-danger" style="display:none;">
+            Deadline date cannot be earlier than today.
+        </small>
     </div>
 
     <div class="form-group">
@@ -85,3 +88,5 @@
     <button type="submit" class="btn btn-success">Save Order</button>
     <a href="@Url.Action("Index", "Orders", new { area = "Management" })" class="btn btn-secondary">Cancel</a>
 </form>
+
+<script src="~/js/deadLineDateValidation.js"></script>

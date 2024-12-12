@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using EventShopApp.Models;
 using EventShopApp.Enums;
+using EventShopApp.Constants;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventShopApp.Areas.Management.ViewModels
 {
@@ -17,6 +19,7 @@ namespace EventShopApp.Areas.Management.ViewModels
         public string? ClientAddress { get; set; }
         public string ClientPhoneNumber { get; set; }
         public DateTime DateOfOrder { get; set; }
+
         public DateTime DeadLineDate { get; set; }
 
         
