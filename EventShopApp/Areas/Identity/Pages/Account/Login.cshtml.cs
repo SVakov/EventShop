@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using EventShopApp.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventShopApp.Areas.Identity.Pages.Account
 {
@@ -21,11 +23,13 @@ namespace EventShopApp.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         /// <summary>
@@ -109,6 +113,12 @@ namespace EventShopApp.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                var employee = _context.Employees.FirstOrDefault(e => e.Email == Input.Email);
+                if (employee != null && employee.IsFired)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account is disabled. Please contact your manager.");
+                    return Page(); // Redisplay the login form with the error
+                }
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
