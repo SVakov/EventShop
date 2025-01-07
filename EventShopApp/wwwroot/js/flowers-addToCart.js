@@ -47,5 +47,8 @@ function addToCart(flowerId) {
                 alert("Failed to add item to cart.");
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while adding the item to the cart.");
+        });
 }

@@ -55,6 +55,25 @@ public class RegisteredUsersCartControllerTests
     [Fact]
     public void Index_ReturnsViewWithCartItems()
     {
+        var flower = new Flower
+        {
+            Id = 1,
+            FlowerType = "Rose",
+            FlowerQuantity = 10, // Ensure sufficient stock
+            Price = 5.0m,
+            Description = "Red Roses"
+        };
+        _context.Flowers.Add(flower);
+        var arrangement = new ArrangementItem
+        {
+            Id = 2,
+            ArrangementItemType = "Birthday Bouquet",
+            ArrangementItemsQuantity = 10, // Ensure sufficient stock
+            Price = 5.0m,
+            Description = "For Birthdays"
+        };
+        _context.ArrangementItems.Add(arrangement);
+        _context.SaveChanges();
         // Arrange
         _cartService.AddToCart(new CartItemViewModel { Id = 1, ItemType = OrderType.Flower, Quantity = 2 });
         _cartService.AddToCart(new CartItemViewModel { Id = 2, ItemType = OrderType.Arrangement, Quantity = 1 });
@@ -73,6 +92,25 @@ public class RegisteredUsersCartControllerTests
     [Fact]
     public void ClearCart_ClearsCartAndReturnsOk()
     {
+        var flower = new Flower
+        {
+            Id = 1,
+            FlowerType = "Rose",
+            FlowerQuantity = 10, // Ensure sufficient stock
+            Price = 5.0m,
+            Description = "Red Roses"
+        };
+        _context.Flowers.Add(flower);
+        var arrangement = new ArrangementItem
+        {
+            Id = 2,
+            ArrangementItemType = "Birthday Bouquet",
+            ArrangementItemsQuantity = 10, // Ensure sufficient stock
+            Price = 5.0m,
+            Description = "For Birthdays"
+        };
+        _context.ArrangementItems.Add(arrangement);
+        _context.SaveChanges();
         // Arrange
         _cartService.AddToCart(new CartItemViewModel { Id = 1, ItemType = OrderType.Flower, Quantity = 2 });
         _cartService.AddToCart(new CartItemViewModel { Id = 2, ItemType = OrderType.Arrangement, Quantity = 1 });

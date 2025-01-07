@@ -9,5 +9,6 @@ namespace EventShopApp.Services.Interfaces
         void RemoveFromCart(int id);
         void ClearCart();
         Task<bool> SubmitOrder(OrderViewModel model);
+        void CleanupStaleCartItems(TimeSpan timeout);
     }
 }

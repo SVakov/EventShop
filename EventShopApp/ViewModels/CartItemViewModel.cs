@@ -11,5 +11,7 @@ namespace EventShopApp.ViewModels
         public int Quantity { get; set; }
         public decimal TotalPrice => Price * Quantity;
         public OrderType ItemType { get; set; }
+
+        public DateTime AddedAt { get; set; } = DateTime.UtcNow;
     }
 }

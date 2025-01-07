@@ -34,6 +34,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IFlowerService, FlowerService>();
 builder.Services.AddScoped<IArrangementService, ArrangementService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddHostedService<CartCleanupService>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("ManagementAccess", policy =>

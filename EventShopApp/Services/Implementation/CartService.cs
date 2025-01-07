@@ -23,42 +23,147 @@ namespace EventShopApp.Services.Implementation
 
         public void AddToCart(CartItemViewModel item)
         {
-            var existingItem = CartItems.FirstOrDefault(i => i.Id == item.Id && i.ItemType == item.ItemType);
+            if (item.ItemType == OrderType.Flower)
+            {
+                var flower = _context.Flowers.FirstOrDefault(f => f.Id == item.Id);
+                if (flower == null || flower.FlowerQuantity < item.Quantity)
+                {
+                    throw new InvalidOperationException("Not enough stock for the selected flower.");
+                }
 
+                flower.FlowerQuantity -= item.Quantity;
+                Console.WriteLine($"Stock after deduction: {flower.FlowerQuantity}");
+                _context.Flowers.Update(flower);
+            }
+            else if (item.ItemType == OrderType.Arrangement)
+            {
+                var arrangement = _context.ArrangementItems.FirstOrDefault(a => a.Id == item.Id);
+                if (arrangement == null || arrangement.ArrangementItemsQuantity < item.Quantity)
+                {
+                    throw new InvalidOperationException("Not enough stock for the selected arrangement.");
+                }
+
+                arrangement.ArrangementItemsQuantity -= item.Quantity;
+                _context.ArrangementItems.Update(arrangement);
+            }
+
+            _context.SaveChanges();
+
+            var existingItem = CartItems.FirstOrDefault(i => i.Id == item.Id && i.ItemType == item.ItemType);
             if (existingItem != null)
             {
                 existingItem.Quantity += item.Quantity;
+                existingItem.AddedAt = DateTime.UtcNow;
             }
             else
             {
+                item.AddedAt = DateTime.UtcNow;
                 CartItems.Add(item);
             }
         }
+
 
         public void RemoveFromCart(int id)
         {
             var item = CartItems.FirstOrDefault(i => i.Id == id);
             if (item != null)
             {
+                if (item.ItemType == OrderType.Flower)
+                {
+                    var flower = _context.Flowers.FirstOrDefault(f => f.Id == item.Id);
+                    if (flower != null)
+                    {
+                        flower.FlowerQuantity += item.Quantity;
+                        _context.Flowers.Update(flower);
+                    }
+                }
+                else if (item.ItemType == OrderType.Arrangement)
+                {
+                    var arrangement = _context.ArrangementItems.FirstOrDefault(a => a.Id == item.Id);
+                    if (arrangement != null)
+                    {
+                        arrangement.ArrangementItemsQuantity += item.Quantity;
+                        _context.ArrangementItems.Update(arrangement);
+                    }
+                }
+
+                _context.SaveChanges();
                 CartItems.Remove(item);
             }
         }
 
+
         public void ClearCart()
         {
+            foreach (var item in CartItems)
+            {
+                if (item.ItemType == OrderType.Flower)
+                {
+                    var flower = _context.Flowers.FirstOrDefault(f => f.Id == item.Id);
+                    if (flower != null)
+                    {
+                        flower.FlowerQuantity += item.Quantity;
+                        _context.Flowers.Update(flower);
+                    }
+                }
+                else if (item.ItemType == OrderType.Arrangement)
+                {
+                    var arrangement = _context.ArrangementItems.FirstOrDefault(a => a.Id == item.Id);
+                    if (arrangement != null)
+                    {
+                        arrangement.ArrangementItemsQuantity += item.Quantity;
+                        _context.ArrangementItems.Update(arrangement);
+                    }
+                }
+            }
+
+            // Save changes to update stock
+            _context.SaveChanges();
+
+            // Clear the cart
             CartItems.Clear();
         }
 
+
+        public void CleanupStaleCartItems(TimeSpan timeout)
+        {
+            var now = DateTime.UtcNow;
+            var staleItems = CartItems.Where(i => now - i.AddedAt > timeout).ToList();
+
+            foreach (var item in staleItems)
+            {
+                if (item.ItemType == OrderType.Flower)
+                {
+                    var flower = _context.Flowers.FirstOrDefault(f => f.Id == item.Id);
+                    if (flower != null)
+                    {
+                        flower.FlowerQuantity += item.Quantity;
+                        _context.Flowers.Update(flower);
+                    }
+                }
+                else if (item.ItemType == OrderType.Arrangement)
+                {
+                    var arrangement = _context.ArrangementItems.FirstOrDefault(a => a.Id == item.Id);
+                    if (arrangement != null)
+                    {
+                        arrangement.ArrangementItemsQuantity += item.Quantity;
+                        _context.ArrangementItems.Update(arrangement);
+                    }
+                }
+
+                CartItems.Remove(item);
+            }
+
+            _context.SaveChanges();
+        }
+
+
         public async Task<bool> SubmitOrder(OrderViewModel model)
         {
-            //Console.WriteLine("SubmitOrder in CartService triggered.");
-            //Console.WriteLine($"CartItems Count: {CartItems.Count}");
-            //Console.WriteLine($"Order Details - Email: {model.Email}, Name: {model.Name}");
-
             if (!CartItems.Any()) return false;
 
+            // Find or create the client
             var client = _context.Clients.FirstOrDefault(c => c.Email == model.Email);
-
             if (client == null)
             {
                 client = new Client
@@ -73,18 +178,20 @@ namespace EventShopApp.Services.Implementation
                 await _context.SaveChangesAsync();
             }
 
+            // Create the order
             var order = new Order
             {
                 ClientId = client.Id,
                 DateOfOrder = DateTime.Now,
                 DeadLineDate = model.DeadLineDate,
-                Status = OrderStatus.InProgress
+                Status = OrderStatus.Pending
             };
-
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
+            Console.WriteLine($"Order created: {order.Id}");
 
-            foreach (var cartItem in CartItems)
+            // Validate and process cart items
+            foreach (var cartItem in CartItems.ToList())
             {
                 if (cartItem.ItemType == OrderType.Flower)
                 {
@@ -94,6 +201,9 @@ namespace EventShopApp.Services.Implementation
                         flower.FlowerQuantity -= cartItem.Quantity;
                         _context.Flowers.Update(flower);
 
+
+
+                        // Add order detail for flower
                         _context.OrderDetails.Add(new OrderDetail
                         {
                             OrderId = order.Id,
@@ -114,6 +224,7 @@ namespace EventShopApp.Services.Implementation
                         arrangement.ArrangementItemsQuantity -= cartItem.Quantity;
                         _context.ArrangementItems.Update(arrangement);
 
+                        // Add order detail for arrangement
                         _context.OrderDetails.Add(new OrderDetail
                         {
                             OrderId = order.Id,
@@ -129,8 +240,12 @@ namespace EventShopApp.Services.Implementation
             }
 
             await _context.SaveChangesAsync();
+            Console.WriteLine("OrderDetails saved.");
+
             ClearCart();
+
             return true;
         }
+
     }
 }

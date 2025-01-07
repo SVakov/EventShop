@@ -101,7 +101,7 @@ namespace EventShopApp.Areas.RegisteredUsers.Controllers
                         ClientId = client.Id,
                         DateOfOrder = DateTime.Now,
                         DeadLineDate = model.DeadLineDate,
-                        Status = OrderStatus.InProgress
+                        Status = OrderStatus.Pending
                     };
                     _context.Orders.Add(order);
                     await _context.SaveChangesAsync();
@@ -113,7 +113,6 @@ namespace EventShopApp.Areas.RegisteredUsers.Controllers
                             var flower = _context.Flowers.FirstOrDefault(f => f.Id == cartItem.Id);
                             if (flower != null && flower.FlowerQuantity >= cartItem.Quantity)
                             {
-                                flower.FlowerQuantity -= cartItem.Quantity;
 
                                 _context.OrderDetails.Add(new OrderDetail
                                 {
@@ -132,7 +131,6 @@ namespace EventShopApp.Areas.RegisteredUsers.Controllers
                             var arrangement = _context.ArrangementItems.FirstOrDefault(a => a.Id == cartItem.Id);
                             if (arrangement != null && arrangement.ArrangementItemsQuantity >= cartItem.Quantity)
                             {
-                                arrangement.ArrangementItemsQuantity -= cartItem.Quantity;
 
                                 _context.OrderDetails.Add(new OrderDetail
                                 {
